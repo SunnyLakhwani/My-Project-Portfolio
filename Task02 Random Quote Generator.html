@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Quoth — Random Quote Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --ink: #0f0e0c;
+    --paper: #f8f4ed;
+    --cream: #ede8df;
+    --rust: #b84c2a;
+    --gold: #c8963c;
+    --muted: #8c8275;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Decorative top bar */
+  .topbar {
+    height: 5px;
+    background: linear-gradient(90deg, var(--rust), var(--gold), var(--rust));
+  }
+
+  /* Header */
+  header {
+    padding: 28px 40px 20px;
+    border-bottom: 1px solid var(--cream);
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+  }
+
+  .logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.4rem;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+  }
+
+  .logo em { color: var(--rust); font-style: italic; }
+
+  .tagline {
+    font-size: 0.78rem;
+    font-weight: 300;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* Category pills */
+  .category-row {
+    display: flex;
+    gap: 8px;
+    padding: 18px 40px;
+    border-bottom: 1px solid var(--cream);
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex-wrap: wrap;
+  }
+
+  .pill {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 30px;
+    border: 1.5px solid var(--cream);
+    cursor: pointer;
+    background: transparent;
+    color: var(--muted);
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .pill:hover { border-color: var(--rust); color: var(--rust); }
+  .pill.active { background: var(--rust); border-color: var(--rust); color: #fff; }
+
+  /* Main quote area */
+  .quote-stage {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 40px;
+  }
+
+  .quote-card {
+    max-width: 780px;
+    width: 100%;
+    position: relative;
+  }
+
+  .quote-mark {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 10rem;
+    line-height: 0.7;
+    color: var(--cream);
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    font-weight: 600;
+    user-select: none;
+    z-index: 0;
+  }
+
+  .quote-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .quote-category-tag {
+    font-size: 0.72rem;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--rust);
+    font-weight: 500;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .quote-category-tag::before {
+    content: '';
+    width: 28px;
+    height: 1.5px;
+    background: var(--rust);
+  }
+
+  .quote-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.4rem;
+    font-style: italic;
+    line-height: 1.4;
+    color: var(--ink);
+    margin-bottom: 36px;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .quote-text.visible { opacity: 1; transform: translateY(0); }
+
+  .author-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    opacity: 0;
+    transition: opacity 0.5s ease 0.2s;
+  }
+
+  .author-row.visible { opacity: 1; }
+
+  .author-line {
+    width: 40px;
+    height: 1.5px;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .author-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+
+  .author-meta {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* Actions */
+  .action-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 48px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 13px 28px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn:active { transform: scale(0.96); }
+
+  .btn-primary {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .btn-primary:hover { background: #222; }
+
+  .btn-ghost {
+    background: transparent;
+    border: 1.5px solid var(--cream);
+    color: var(--muted);
+  }
+
+  .btn-ghost:hover { border-color: var(--muted); color: var(--ink); }
+
+  /* Footer strip */
+  footer {
+    padding: 18px 40px;
+    border-top: 1px solid var(--cream);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  .counter-badge {
+    background: var(--cream);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+
+  /* Copy feedback */
+  .copy-feedback {
+    font-size: 0.75rem;
+    color: var(--rust);
+    opacity: 0;
+    transition: opacity 0.3s;
+    margin-left: 8px;
+  }
+
+  .copy-feedback.show { opacity: 1; }
+
+  /* Divider decoration */
+  .deco-divider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 28px 0 0;
+  }
+  .deco-divider::before, .deco-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--cream);
+  }
+  .deco-diamond {
+    width: 6px;
+    height: 6px;
+    background: var(--gold);
+    transform: rotate(45deg);
+  }
+
+  /* Spinner */
+  .spin {
+    display: inline-block;
+    animation: spin 0.6s linear;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="topbar"></div>
+
+<header>
+  <div class="logo">Qu<em>o</em>th</div>
+  <div class="tagline">Words Worth Keeping</div>
+</header>
+
+<div class="category-row">
+  <button class="pill active" onclick="setCategory('all', this)">All</button>
+  <button class="pill" onclick="setCategory('wisdom', this)">Wisdom</button>
+  <button class="pill" onclick="setCategory('motivation', this)">Motivation</button>
+  <button class="pill" onclick="setCategory('philosophy', this)">Philosophy</button>
+  <button class="pill" onclick="setCategory('creativity', this)">Creativity</button>
+  <button class="pill" onclick="setCategory('life', this)">Life</button>
+</div>
+
+<div class="quote-stage">
+  <div class="quote-card">
+    <div class="quote-mark">"</div>
+    <div class="quote-content">
+      <div class="quote-category-tag" id="quoteCategory">Wisdom</div>
+      <div class="quote-text" id="quoteText">The measure of intelligence is the ability to change.</div>
+      <div class="author-row" id="authorRow">
+        <div class="author-line"></div>
+        <div>
+          <div class="author-name" id="authorName">Albert Einstein</div>
+          <div class="author-meta" id="authorMeta">Theoretical Physicist</div>
+        </div>
+      </div>
+      <div class="action-row">
+        <button class="btn btn-primary" onclick="newQuote()">
+          <span id="refreshIcon">↻</span> New Quote
+        </button>
+        <button class="btn btn-ghost" onclick="copyQuote()">
+          Copy <span class="copy-feedback" id="copyFeedback">Copied!</span>
+        </button>
+      </div>
+    </div>
+    <div class="deco-divider"><div class="deco-diamond"></div></div>
+  </div>
+</div>
+
+<footer>
+  <span>A curated collection of timeless words</span>
+  <span class="counter-badge" id="totalCounter">Loading...</span>
+</footer>
+
+<script>
+  const quotes = [
+    { text: "The measure of intelligence is the ability to change.", author: "Albert Einstein", meta: "Theoretical Physicist", category: "wisdom" },
+    { text: "In the middle of every difficulty lies opportunity.", author: "Albert Einstein", meta: "Theoretical Physicist", category: "motivation" },
+    { text: "Life is what happens when you're busy making other plans.", author: "John Lennon", meta: "Musician & Activist", category: "life" },
+    { text: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius", meta: "Chinese Philosopher", category: "wisdom" },
+    { text: "The only way to do great work is to love what you do.", author: "Steve Jobs", meta: "Co-founder, Apple", category: "motivation" },
+    { text: "Imagination is more important than knowledge.", author: "Albert Einstein", meta: "Theoretical Physicist", category: "creativity" },
+    { text: "We are what we repeatedly do. Excellence, then, is not an act, but a habit.", author: "Aristotle", meta: "Greek Philosopher", category: "philosophy" },
+    { text: "The unexamined life is not worth living.", author: "Socrates", meta: "Classical Greek Philosopher", category: "philosophy" },
+    { text: "Creativity is intelligence having fun.", author: "Unknown", meta: "Often attributed to Einstein", category: "creativity" },
+    { text: "Two things are infinite: the universe and human stupidity — and I'm not sure about the universe.", author: "Albert Einstein", meta: "Theoretical Physicist", category: "wisdom" },
+    { text: "You miss 100% of the shots you don't take.", author: "Wayne Gretzky", meta: "Ice Hockey Legend", category: "motivation" },
+    { text: "Be yourself; everyone else is already taken.", author: "Oscar Wilde", meta: "Irish Poet & Playwright", category: "life" },
+    { text: "I think, therefore I am.", author: "René Descartes", meta: "French Philosopher", category: "philosophy" },
+    { text: "An unexamined design is not worth building.", author: "Dieter Rams", meta: "Industrial Designer", category: "creativity" },
+    { text: "Simplicity is the ultimate sophistication.", author: "Leonardo da Vinci", meta: "Renaissance Polymath", category: "wisdom" },
+    { text: "The best time to plant a tree was 20 years ago. The second best time is now.", author: "Chinese Proverb", meta: "Ancient Wisdom", category: "life" },
+    { text: "He who has a why to live can bear almost any how.", author: "Friedrich Nietzsche", meta: "German Philosopher", category: "philosophy" },
+    { text: "Stay hungry, stay foolish.", author: "Steve Jobs", meta: "Co-founder, Apple", category: "motivation" },
+    { text: "Art enables us to find ourselves and lose ourselves at the same time.", author: "Thomas Merton", meta: "American Writer & Mystic", category: "creativity" },
+    { text: "The journey of a thousand miles begins with a single step.", author: "Lao Tzu", meta: "Ancient Chinese Philosopher", category: "wisdom" },
+    { text: "To be yourself in a world that is constantly trying to make you something else is the greatest accomplishment.", author: "Ralph Waldo Emerson", meta: "American Essayist", category: "life" },
+    { text: "Do what you can, with what you have, where you are.", author: "Theodore Roosevelt", meta: "26th U.S. President", category: "motivation" },
+    { text: "The mind is everything. What you think, you become.", author: "Buddha", meta: "Spiritual Teacher", category: "philosophy" },
+    { text: "Every child is an artist. The problem is how to remain an artist once we grow up.", author: "Pablo Picasso", meta: "Spanish Painter", category: "creativity" },
+  ];
+
+  let activeCategory = 'all';
+  let lastIndex = -1;
+
+  function setCategory(cat, el) {
+    activeCategory = cat;
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    newQuote();
+    updateCounter();
+  }
+
+  function filteredQuotes() {
+    return activeCategory === 'all' ? quotes : quotes.filter(q => q.category === activeCategory);
+  }
+
+  function newQuote() {
+    const pool = filteredQuotes();
+    if (pool.length === 0) return;
+
+    let idx;
+    do { idx = Math.floor(Math.random() * pool.length); } while (idx === lastIndex && pool.length > 1);
+    lastIndex = idx;
+
+    const q = pool[idx];
+
+    // Animate out
+    const textEl = document.getElementById('quoteText');
+    const authorEl = document.getElementById('authorRow');
+    textEl.classList.remove('visible');
+    authorEl.classList.remove('visible');
+
+    // Spin icon
+    const icon = document.getElementById('refreshIcon');
+    icon.classList.add('spin');
+    setTimeout(() => icon.classList.remove('spin'), 600);
+
+    setTimeout(() => {
+      document.getElementById('quoteText').textContent = q.text;
+      document.getElementById('authorName').textContent = q.author;
+      document.getElementById('authorMeta').textContent = q.meta;
+      document.getElementById('quoteCategory').textContent = q.category.charAt(0).toUpperCase() + q.category.slice(1);
+      textEl.classList.add('visible');
+      authorEl.classList.add('visible');
+    }, 300);
+  }
+
+  function copyQuote() {
+    const text = document.getElementById('quoteText').textContent;
+    const author = document.getElementById('authorName').textContent;
+    navigator.clipboard.writeText(`"${text}" — ${author}`).then(() => {
+      const fb = document.getElementById('copyFeedback');
+      fb.classList.add('show');
+      setTimeout(() => fb.classList.remove('show'), 2000);
+    });
+  }
+
+  function updateCounter() {
+    const n = filteredQuotes().length;
+    document.getElementById('totalCounter').textContent = `${n} Quote${n !== 1 ? 's' : ''} Available`;
+  }
+
+  // Init
+  setTimeout(() => {
+    document.getElementById('quoteText').classList.add('visible');
+    document.getElementById('authorRow').classList.add('visible');
+  }, 100);
+  updateCounter();
+</script>
+</body>
+</html>
