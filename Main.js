@@ -1,9 +1,9 @@
 // ============================================================
-//  Restaurant Management System — CodeAlpha Task 3
+//  Restaurant Management System 
 //  Single-file version: main.js
-//  Stack: Express.js + SQLite (sql.js) — no MySQL needed!
+//  Stack: Express.js + SQLite (sql.js) 
 //  Run:   node main.js
-//  Seed:  node main.js --seed
+//  Seed:  node main.js 
 // ============================================================
 
 require("dotenv").config();
@@ -44,10 +44,10 @@ async function initDatabase() {
 
   if (fs.existsSync(DB_PATH)) {
     db = new SQL.Database(fs.readFileSync(DB_PATH));
-    console.log("📂 Loaded existing database.");
+    console.log(" Loaded existing database.");
   } else {
     db = new SQL.Database();
-    console.log("🆕 Created fresh database.");
+    console.log(" Created fresh database.");
   }
 
   // ── users ──────────────────────────────────────────────────
@@ -134,7 +134,7 @@ async function initDatabase() {
   )`);
 
   saveToDisk();
-  console.log("✅ All tables ready.");
+  console.log(" All tables ready.");
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -732,7 +732,7 @@ app.patch("/api/inventory/:id", authenticate, (req, res) => {
     const isLow   = updated.quantity <= updated.low_stock_alert;
     res.json({
       success: true,
-      message: isLow ? `⚠️ "${item.item_name}" is running low!` : `"${item.item_name}" updated.`,
+      message: isLow ? "${item.item_name}" is running low!` : `"${item.item_name}" updated.`,
       data: { ...updated, is_low_stock: isLow },
     });
   } catch (err) {
@@ -802,7 +802,7 @@ app.get("/api/reports/stock-alerts", authenticate, adminOnly, (req, res) => {
        FROM inventory WHERE quantity <= low_stock_alert ORDER BY quantity ASC`);
     res.json({
       success: true, alert_count: alerts.length,
-      message: alerts.length > 0 ? `⚠️ ${alerts.length} item(s) need restocking!` : "✅ All inventory healthy.",
+      message: alerts.length > 0 ? ` ${alerts.length} item(s) need restocking!` : " All inventory healthy.",
       data: alerts,
     });
   } catch (err) {
@@ -859,7 +859,7 @@ app.get("/api/reports/table-utilization", authenticate, adminOnly, (req, res) =>
 
 app.get("/", (req, res) => {
   res.json({
-    message: "🍽️ Restaurant Management System — running!",
+    message: "Restaurant Management System — running!",
     version: "1.0.0",
     endpoints: {
       auth:         "POST /api/auth/register | /api/auth/login",
@@ -877,11 +877,11 @@ app.use((req, res) => res.status(404).json({ success: false, message: `Route "${
 app.use((err, req, res, next) => { console.error(err.stack); res.status(500).json({ success: false, message: "Server error." }); });
 
 // ─────────────────────────────────────────────────────────────
-//  SEED HELPER  (run: node main.js --seed)
+//  SEED HELPER  (run: node main.js)
 // ─────────────────────────────────────────────────────────────
 
 async function seedDatabase() {
-  console.log("🌱 Seeding sample data...\n");
+  console.log(" Seeding sample data...\n");
 
   const adminPw = await bcrypt.hash("admin123", 12);
   const staffPw = await bcrypt.hash("staff123", 12);
@@ -893,7 +893,7 @@ async function seedDatabase() {
     try { dbRun("INSERT INTO users (id,name,email,password,role) VALUES (?,?,?,?,?)", [uuidv4(), name, email, pw, role]); }
     catch { /* already exists */ }
   }
-  console.log("✅ Users → admin@restaurant.com / admin123 | staff@restaurant.com / staff123");
+  console.log(" Users → admin@restaurant.com / admin123 | staff@restaurant.com / staff123");
 
   const menuItems = [
     ["Garlic Bread",       "Toasted with garlic butter",             "starter", 4.99],
@@ -913,7 +913,7 @@ async function seedDatabase() {
     try { dbRun("INSERT INTO menu_items (id,name,description,category,price) VALUES (?,?,?,?,?)", [uuidv4(), name, desc, cat, price]); mc++; }
     catch { /* skip */ }
   }
-  console.log(`✅ ${mc} menu items`);
+  console.log(` ${mc} menu items`);
 
   const tables = [[1,2,"window"],[2,2,"window"],[3,4,"main hall"],[4,4,"main hall"],[5,6,"main hall"],[6,8,"private room"]];
   let tc = 0;
@@ -921,7 +921,7 @@ async function seedDatabase() {
     try { dbRun("INSERT INTO restaurant_tables (id,table_number,capacity,location) VALUES (?,?,?,?)", [uuidv4(), num, cap, loc]); tc++; }
     catch { /* skip */ }
   }
-  console.log(`✅ ${tc} tables`);
+  console.log(` ${tc} tables`);
 
   const inv = [
     ["Chicken Breast","kg",15,5,8],["Beef Mince","kg",8,3,10],["Flour","kg",25,10,1.5],
@@ -933,8 +933,8 @@ async function seedDatabase() {
     try { dbRun("INSERT INTO inventory (id,item_name,unit,quantity,low_stock_alert,cost_per_unit) VALUES (?,?,?,?,?,?)", [uuidv4(), name, unit, qty, alert, cost]); ic++; }
     catch { /* skip */ }
   }
-  console.log(`✅ ${ic} inventory items`);
-  console.log("\n🎉 Done! Run: node main.js\n");
+  console.log(` ${ic} inventory items`);
+  console.log("\n Done! Run: node main.js\n");
   process.exit(0);
 }
 
@@ -947,7 +947,7 @@ initDatabase().then(async () => {
     await seedDatabase();
   } else {
     app.listen(PORT, () => {
-      console.log(`\n🚀 http://localhost:${PORT}`);
+      console.log(`\n http://localhost:${PORT}`);
       console.log(`📦 SQLite — no MySQL needed!`);
       console.log(`💡 First time? Run: node main.js --seed\n`);
     });
