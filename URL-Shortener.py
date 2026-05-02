@@ -90,7 +90,7 @@ HTML = """
   </style>
 </head>
 <body>
-<header><h1>✂️ SnipURL</h1><p>Shorten any URL — fast, clean &amp; trackable.</p></header>
+<header><h1>SnipURL</h1><p>Shorten any URL — fast, clean &amp; trackable.</p></header>
 <div class="wrap">
   <div class="card">
     <h2 style="font-size:1rem;color:#f1f5f9">Paste your long URL</h2>
@@ -108,7 +108,7 @@ HTML = """
   </div>
 
   <div class="tbl">
-    <h3>📊 Recent URLs</h3>
+    <h3>Recent URLs</h3>
     <table>
       <thead><tr><th>Code</th><th>Original URL</th><th>Clicks</th><th>Created</th></tr></thead>
       <tbody id="tbody"></tbody>
@@ -197,6 +197,6 @@ def delete_url(code):
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-        print("✅ URL Shortener — SQLite ready & tables created.")
-        print("🌐 Running at: http://localhost:5000")
+        print("URL Shortener — SQLite ready & tables created.")
+        print("Running at: http://localhost:5000")
     app.run(debug=True, port=5000)
