@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 
 /**
  * @title PollingSystem
- * @author CodeAlpha Blockchain Intern
+ * @author Sunny Lakhwani
  * @notice A decentralized, on-chain polling system where anyone can create
  *         polls and vote — with time-based restrictions and double-vote prevention.
  *
@@ -12,13 +12,6 @@ pragma solidity ^0.8.20;
  *  - Each Ethereum address can vote exactly once per poll, before the deadline
  *  - Results and the winning option are queryable after the poll ends
  *  - Polls are stored by incrementing IDs — easy to enumerate
- *
- * HOW TO USE (Remix IDE):
- *  1. Compile with Solidity 0.8.20+
- *  2. Deploy — no constructor args needed
- *  3. Call createPoll() with title, options[], and durationInSeconds
- *  4. Call vote(pollId, optionIndex) from different accounts before deadline
- *  5. Call getWinner(pollId) after the deadline to see results
  */
 contract PollingSystem {
 
