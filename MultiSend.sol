@@ -3,15 +3,9 @@ pragma solidity ^0.8.20;
 
 /**
  * @title MultiSend
- * @author CodeAlpha Blockchain Intern
+ * @author Sunny Lakhwani
  * @notice Distributes Ether equally among a list of recipient addresses
  * @dev Accepts ETH via a payable function and splits it evenly across recipients
- *
- * HOW TO USE (Remix IDE):
- *  1. Compile with Solidity 0.8.20+
- *  2. Deploy — no constructor arguments needed
- *  3. Call sendToAll() with recipients array + ETH value attached
- *  4. Check events/logs to confirm each transfer
  */
 contract MultiSend {
 
