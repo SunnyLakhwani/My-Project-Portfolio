@@ -3,25 +3,10 @@ pragma solidity ^0.8.20;
 
 /**
  * @title CryptoLock
- * @author CodeAlpha Blockchain Intern
+ * @author Sunny Lakhwani
  * @notice A personal crypto-vault that time-locks Ether deposits.
  *         Users deposit ETH with a custom unlock time; withdrawals are blocked
  *         until that timestamp passes.
- *
- * FEATURES:
- *  - Each user manages their own independent deposit
- *  - Lock duration is set per deposit (not globally)
- *  - Users can top-up (add more ETH) to an existing lock, extending the lock
- *    time if a later unlock date is provided
- *  - Emergency owner circuit-breaker (pause deposits only, never touches user funds)
- *  - Full event trail for front-end and off-chain indexing
- *
- * HOW TO USE (Remix IDE):
- *  1. Compile with Solidity 0.8.20+
- *  2. Deploy — deployer becomes the owner automatically
- *  3. Switch to any account → call deposit() with ETH value + lockDurationInSeconds
- *  4. Try withdraw() before the deadline → it should revert with "CryptoLock: still locked"
- *  5. Fast-forward time in Remix VM or wait for deadline → withdraw() succeeds
  */
 contract CryptoLock {
 
@@ -90,18 +75,7 @@ contract CryptoLock {
 
     // ── Deposit ───────────────────────────────────────────────────────────────
 
-    /**
-     * @notice Lock ETH in your personal vault for a chosen duration
-     * @dev    If you already have a vault:
-     *           - ETH is added to your existing balance
-     *           - unlock time is updated to max(current, new) — never shortened
-     *
-     * @param lockDurationInSeconds How long from now until you can withdraw
-     *
-     * Example: deposit 0.5 ETH for 7 days
-     *   → value: 500000000000000000 wei
-     *   → lockDurationInSeconds: 604800
-     */
+    
     function deposit(uint256 lockDurationInSeconds) external payable notPaused {
         require(msg.value > 0, "CryptoLock: must send ETH");
         require(
