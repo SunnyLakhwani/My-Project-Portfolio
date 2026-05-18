@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LENS — Image Gallery</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --card: #161616;
+    --border: #2a2a2a;
+    --text: #e8e2d9;
+    --muted: #6b6760;
+    --accent: #c8a97e;
+    --accent2: #7c9e8a;
+    --white: #f5f0ea;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2rem 4rem;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--white);
+  }
+
+  .logo span { color: var(--accent); font-style: italic; }
+
+  nav { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+  .filter-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.45rem 1rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    border-radius: 2px;
+  }
+
+  .filter-btn:hover, .filter-btn.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(200, 169, 126, 0.07);
+  }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 5rem 4rem 3rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 6vw, 6rem);
+    font-weight: 400;
+    line-height: 1;
+    color: var(--white);
+  }
+
+  .hero h1 em { font-style: italic; color: var(--accent); }
+
+  .hero-sub {
+    max-width: 280px;
+    color: var(--muted);
+    font-size: 0.72rem;
+    line-height: 1.8;
+    letter-spacing: 0.05em;
+    text-align: right;
+  }
+
+  /* ── GALLERY GRID ── */
+  .gallery-wrap {
+    padding: 2rem 4rem 6rem;
+  }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5px;
+  }
+
+  .gallery-item {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    cursor: pointer;
+    background: var(--card);
+  }
+
+  .gallery-item:nth-child(3n+1) { aspect-ratio: 3/4; }
+  .gallery-item:nth-child(5n+2) { aspect-ratio: 16/9; }
+
+  .gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.4s ease;
+    filter: grayscale(20%) brightness(0.88);
+  }
+
+  .gallery-item:hover img {
+    transform: scale(1.06);
+    filter: grayscale(0%) brightness(1);
+  }
+
+  .item-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 55%);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 1.4rem;
+  }
+
+  .gallery-item:hover .item-overlay { opacity: 1; }
+
+  .item-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    color: var(--white);
+    margin-bottom: 0.3rem;
+    transform: translateY(8px);
+    transition: transform 0.3s ease;
+  }
+
+  .item-cat {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    transform: translateY(8px);
+    transition: transform 0.3s ease 0.05s;
+  }
+
+  .gallery-item:hover .item-title,
+  .gallery-item:hover .item-cat {
+    transform: translateY(0);
+  }
+
+  .item-num {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 0.62rem;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.1em;
+  }
+
+  /* hide filtered items */
+  .gallery-item.hidden {
+    display: none;
+  }
+
+  /* ── LIGHTBOX ── */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background: rgba(5,5,5,0.97);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+  }
+
+  .lightbox.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .lb-inner {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+  }
+
+  .lb-img-wrap {
+    position: relative;
+    overflow: hidden;
+    max-height: 78vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .lb-img-wrap img {
+    max-width: 88vw;
+    max-height: 76vh;
+    object-fit: contain;
+    border: 1px solid var(--border);
+    display: block;
+    transform: scale(0.94);
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .lightbox.open .lb-img-wrap img {
+    transform: scale(1);
+  }
+
+  .lb-info {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .lb-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--white);
+    font-style: italic;
+  }
+
+  .lb-cat {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .lb-counter {
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-left: auto;
+  }
+
+  .lb-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text);
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+    border-radius: 2px;
+    backdrop-filter: blur(6px);
+  }
+
+  .lb-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(200, 169, 126, 0.08);
+  }
+
+  .lb-prev { left: -70px; }
+  .lb-next { right: -70px; }
+
+  .lb-close {
+    position: absolute;
+    top: -50px;
+    right: 0;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    border-radius: 2px;
+  }
+
+  .lb-close:hover { border-color: #e87070; color: #e87070; }
+
+  /* keyboard hint */
+  .lb-hint {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.62rem;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--muted);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    header { padding: 1.2rem 1.5rem; }
+    .logo { font-size: 1.5rem; }
+    .hero { padding: 3rem 1.5rem 2rem; flex-direction: column; align-items: flex-start; }
+    .hero-sub { text-align: left; max-width: 100%; }
+    .gallery-wrap { padding: 1rem 1.5rem 4rem; }
+    .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1px; }
+    .gallery-item:nth-child(3n+1),
+    .gallery-item:nth-child(5n+2) { aspect-ratio: 4/3; }
+    .lb-prev { left: -45px; }
+    .lb-next { right: -45px; }
+    .lb-btn { width: 38px; height: 38px; font-size: 1rem; }
+    footer { padding: 1.5rem; flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">LE<span>N</span>S</div>
+  <nav id="filterNav">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="nature">Nature</button>
+    <button class="filter-btn" data-filter="urban">Urban</button>
+    <button class="filter-btn" data-filter="portrait">Portrait</button>
+    <button class="filter-btn" data-filter="abstract">Abstract</button>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>Visual<br><em>Stories</em><br>Told Still</h1>
+  <p class="hero-sub">A curated collection of moments captured in light and shadow. Use arrow keys or click to explore each frame.</p>
+</section>
+
+<main class="gallery-wrap">
+  <div class="gallery-grid" id="gallery"></div>
+</main>
+
+<div class="lightbox" id="lightbox">
+  <div class="lb-inner">
+    <button class="lb-close" id="lbClose">✕</button>
+    <div class="lb-img-wrap">
+      <button class="lb-btn lb-prev" id="lbPrev">&#8592;</button>
+      <img id="lbImg" src="" alt="">
+      <button class="lb-btn lb-next" id="lbNext">&#8594;</button>
+    </div>
+    <div class="lb-info">
+      <div>
+        <div class="lb-title" id="lbTitle"></div>
+        <div class="lb-cat" id="lbCat"></div>
+      </div>
+      <div class="lb-counter" id="lbCounter"></div>
+    </div>
+  </div>
+  <div class="lb-hint">← → navigate &nbsp;|&nbsp; ESC close</div>
+</div>
+
+<footer>
+  <span>LENS Gallery — Sunny Lakhwwani's Task 1</span>
+  <span id="countDisplay"></span>
+</footer>
+
+<script>
+// ── DATA ── (using high-quality Unsplash photos by topic)
+const photos = [
+  { title: "Dusk Canopy",       cat: "nature",   url: "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=900&q=80" },
+  { title: "Rain Slicked",      cat: "urban",    url: "https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=900&q=80" },
+  { title: "Still Water",       cat: "nature",   url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&q=80" },
+  { title: "Soft Gaze",         cat: "portrait", url: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=900&q=80" },
+  { title: "Chromatic Drift",   cat: "abstract", url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&q=80" },
+  { title: "Neon Alley",        cat: "urban",    url: "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=900&q=80" },
+  { title: "Moorland Mist",     cat: "nature",   url: "https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?w=900&q=80" },
+  { title: "Cerulean Flow",     cat: "abstract", url: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=900&q=80" },
+  { title: "Golden Hour",       cat: "portrait", url: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=900&q=80" },
+  { title: "Brutalist Arch",    cat: "urban",    url: "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=900&q=80" },
+  { title: "Pine Needles",      cat: "nature",   url: "https://images.unsplash.com/photo-1448375240586-882707db888b?w=900&q=80" },
+  { title: "Liquid Glass",      cat: "abstract", url: "https://images.unsplash.com/photo-1550859492-d5da9d8e45f3?w=900&q=80" },
+];
+
+let currentIndex = 0;
+let visibleItems = [];
+
+// ── BUILD GRID ──
+function buildGrid(filter = 'all') {
+  const grid = document.getElementById('gallery');
+  grid.innerHTML = '';
+  visibleItems = [];
+
+  photos.forEach((p, i) => {
+    if (filter !== 'all' && p.cat !== filter) return;
+
+    visibleItems.push(i);
+    const div = document.createElement('div');
+    div.className = 'gallery-item';
+    div.dataset.index = i;
+    div.innerHTML = `
+      <img src="${p.url}" alt="${p.title}" loading="lazy">
+      <div class="item-overlay">
+        <div class="item-title">${p.title}</div>
+        <div class="item-cat">${p.cat}</div>
+      </div>
+      <div class="item-num">${String(visibleItems.length).padStart(2,'0')}</div>
+    `;
+    div.addEventListener('click', () => openLightbox(i));
+    grid.appendChild(div);
+  });
+
+  document.getElementById('countDisplay').textContent = `${visibleItems.length} frames`;
+}
+
+// ── LIGHTBOX ──
+function openLightbox(index) {
+  currentIndex = visibleItems.indexOf(index);
+  if (currentIndex === -1) currentIndex = 0;
+  showImage();
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function showImage() {
+  const idx = visibleItems[currentIndex];
+  const p = photos[idx];
+  const img = document.getElementById('lbImg');
+  img.style.opacity = '0';
+  img.style.transform = 'scale(0.96)';
+  setTimeout(() => {
+    img.src = p.url;
+    img.alt = p.title;
+    img.onload = () => {
+      img.style.transition = 'opacity 0.3s ease, transform 0.4s ease';
+      img.style.opacity = '1';
+      img.style.transform = 'scale(1)';
+    };
+  }, 80);
+  document.getElementById('lbTitle').textContent = p.title;
+  document.getElementById('lbCat').textContent = p.cat;
+  document.getElementById('lbCounter').textContent = `${currentIndex + 1} / ${visibleItems.length}`;
+}
+
+function prevImage() {
+  currentIndex = (currentIndex - 1 + visibleItems.length) % visibleItems.length;
+  showImage();
+}
+
+function nextImage() {
+  currentIndex = (currentIndex + 1) % visibleItems.length;
+  showImage();
+}
+
+// ── FILTERS ──
+document.getElementById('filterNav').addEventListener('click', e => {
+  if (!e.target.classList.contains('filter-btn')) return;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  buildGrid(e.target.dataset.filter);
+});
+
+// ── CONTROLS ──
+document.getElementById('lbClose').addEventListener('click', closeLightbox);
+document.getElementById('lbPrev').addEventListener('click', prevImage);
+document.getElementById('lbNext').addEventListener('click', nextImage);
+
+document.getElementById('lightbox').addEventListener('click', e => {
+  if (e.target === document.getElementById('lightbox')) closeLightbox();
+});
+
+document.addEventListener('keydown', e => {
+  const lb = document.getElementById('lightbox');
+  if (!lb.classList.contains('open')) return;
+  if (e.key === 'ArrowLeft') prevImage();
+  if (e.key === 'ArrowRight') nextImage();
+  if (e.key === 'Escape') closeLightbox();
+});
+
+// ── INIT ──
+buildGrid();
+</script>
+</body>
+</html>
