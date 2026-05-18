@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forge — Sunny Lakhwani's Task 3</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Fraunces:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f6f3;
+    --bg2: #eeecea;
+    --card: #ffffff;
+    --border: #e4e2de;
+    --text: #18161a;
+    --muted: #8b8a88;
+    --accent: #5b3de8;
+    --accent2: #7258f0;
+    --accent-light: #ede9fd;
+    --danger: #d63a3a;
+    --success: #2e9e5f;
+    --warn: #d48c2a;
+    --info: #2a7ad4;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'Space Grotesk',sans-serif; min-height:100vh; }
+
+  /* AUTH */
+  .auth-screen { display:flex; align-items:center; justify-content:center; min-height:100vh; background:var(--bg); }
+  .auth-box { background:var(--card); border:1px solid var(--border); border-radius:24px; padding:2.5rem; width:100%; max-width:420px; }
+  .auth-brand { font-family:'Fraunces',serif; font-size:2.2rem; font-weight:700; color:var(--accent); text-align:center; margin-bottom:0.2rem; }
+  .auth-tagline { text-align:center; color:var(--muted); font-size:0.88rem; margin-bottom:2rem; }
+  .auth-tabs { display:flex; border-bottom:1px solid var(--border); margin-bottom:1.5rem; }
+  .auth-tab { flex:1; background:none; border:none; padding:0.6rem; font-family:'Space Grotesk',sans-serif; font-size:0.9rem; cursor:pointer; color:var(--muted); border-bottom:2px solid transparent; margin-bottom:-1px; transition:all 0.2s; }
+  .auth-tab.active { color:var(--accent); border-bottom-color:var(--accent); font-weight:600; }
+  .fg { margin-bottom:1rem; }
+  .fg label { display:block; font-size:0.75rem; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:0.35rem; }
+  .fg input, .fg select, .fg textarea { width:100%; border:1px solid var(--border); background:var(--bg); border-radius:10px; padding:0.65rem 0.9rem; font-family:'Space Grotesk',sans-serif; font-size:0.9rem; color:var(--text); outline:none; transition:border-color 0.2s; }
+  .fg input:focus, .fg select:focus, .fg textarea:focus { border-color:var(--accent); }
+  .fg textarea { resize:vertical; min-height:70px; }
+  .auth-btn { width:100%; background:var(--accent); color:white; border:none; border-radius:12px; padding:0.8rem; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:0.95rem; cursor:pointer; transition:all 0.2s; }
+  .auth-btn:hover { background:var(--accent2); }
+  .auth-msg { padding:0.6rem 0.9rem; border-radius:8px; font-size:0.84rem; margin-bottom:1rem; display:none; }
+  .auth-msg.error { background:#fde8e8; color:var(--danger); border:1px solid #f5c2c2; display:block; }
+  .auth-msg.success { background:var(--accent-light); color:var(--accent); border:1px solid #cac0f7; display:block; }
+
+  /* APP SHELL */
+  .shell { display:grid; grid-template-columns:240px 1fr; min-height:100vh; }
+  @media(max-width:800px) { .shell { grid-template-columns:1fr; } .sidebar { display:none; } }
+  .sidebar { background:var(--card); border-right:1px solid var(--border); display:flex; flex-direction:column; padding:1.5rem 1.2rem; gap:0.2rem; }
+  .s-brand { font-family:'Fraunces',serif; font-size:1.6rem; font-weight:700; color:var(--accent); margin-bottom:1.5rem; padding:0 0.3rem; }
+  .s-section { font-size:0.68rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:1px; padding:0.3rem 0.5rem; margin-top:1rem; margin-bottom:0.2rem; }
+  .s-item { display:flex; align-items:center; gap:0.7rem; padding:0.55rem 0.8rem; border-radius:10px; cursor:pointer; color:var(--muted); font-size:0.88rem; border:none; background:none; width:100%; text-align:left; transition:all 0.2s; font-family:'Space Grotesk',sans-serif; }
+  .s-item:hover { background:var(--bg2); color:var(--text); }
+  .s-item.active { background:var(--accent-light); color:var(--accent); font-weight:600; }
+  .s-item .s-icon { font-size:1rem; width:20px; text-align:center; }
+  .s-badge { margin-left:auto; background:var(--accent); color:white; border-radius:10px; padding:0.1rem 0.5rem; font-size:0.7rem; font-weight:700; }
+  .s-user { margin-top:auto; padding:0.7rem 0.5rem; display:flex; align-items:center; gap:0.7rem; border-top:1px solid var(--border); padding-top:1rem; }
+  .s-avatar { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem; color:white; flex-shrink:0; }
+  .s-user-name { font-size:0.85rem; font-weight:600; }
+  .s-user-role { font-size:0.72rem; color:var(--muted); }
+  .logout-link { margin-left:auto; background:none; border:none; color:var(--muted); cursor:pointer; font-size:0.75rem; font-family:'Space Grotesk',sans-serif; text-decoration:underline; }
+  .logout-link:hover { color:var(--danger); }
+
+  /* MAIN */
+  .main { overflow-y:auto; }
+  .page { display:none; padding:2rem; } .page.active { display:block; }
+  .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem; }
+  .page-title { font-family:'Fraunces',serif; font-size:1.6rem; font-weight:700; }
+  .btn { border:none; border-radius:10px; padding:0.55rem 1.1rem; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:0.85rem; cursor:pointer; transition:all 0.2s; }
+  .btn-primary { background:var(--accent); color:white; }
+  .btn-primary:hover { background:var(--accent2); }
+  .btn-outline { background:none; border:1px solid var(--border); color:var(--text); }
+  .btn-outline:hover { border-color:var(--accent); color:var(--accent); }
+  .btn-sm { padding:0.35rem 0.8rem; font-size:0.78rem; }
+  .btn-danger { background:var(--danger); color:white; }
+
+  /* DASHBOARD */
+  .stats-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:1rem; margin-bottom:2rem; }
+  .stat-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:1.1rem 1.2rem; }
+  .stat-num { font-family:'Fraunces',serif; font-size:2rem; font-weight:700; margin-bottom:0.2rem; }
+  .stat-label { font-size:0.75rem; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:0.5px; }
+
+  /* PROJECTS */
+  .projects-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1.2rem; }
+  .project-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:1.3rem; cursor:pointer; transition:all 0.2s; position:relative; overflow:hidden; }
+  .project-card::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; border-radius:16px 16px 0 0; }
+  .project-card:hover { box-shadow:0 6px 24px rgba(0,0,0,0.08); transform:translateY(-2px); }
+  .project-color-strip { height:4px; border-radius:16px 16px 0 0; margin:-1.3rem -1.3rem 1rem; }
+  .project-name { font-family:'Fraunces',serif; font-size:1.1rem; font-weight:700; margin-bottom:0.3rem; }
+  .project-desc { font-size:0.82rem; color:var(--muted); line-height:1.5; margin-bottom:1rem; }
+  .project-meta { display:flex; align-items:center; justify-content:space-between; font-size:0.78rem; }
+  .project-tag { display:inline-block; background:var(--accent-light); color:var(--accent); border-radius:6px; padding:0.2rem 0.6rem; font-size:0.72rem; font-weight:600; margin-right:0.3rem; }
+  .project-progress { margin-top:0.8rem; }
+  .progress-bar { background:var(--bg2); border-radius:4px; height:6px; overflow:hidden; }
+  .progress-fill { height:100%; border-radius:4px; transition:width 0.4s; }
+  .member-avatars { display:flex; margin-top:0.8rem; }
+  .member-pip { width:28px; height:28px; border-radius:50%; border:2px solid var(--card); display:flex; align-items:center; justify-content:center; font-size:0.65rem; font-weight:700; color:white; margin-left:-8px; }
+  .member-pip:first-child { margin-left:0; }
+
+  /* BOARD */
+  .board-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem; }
+  .board-back { background:none; border:1px solid var(--border); color:var(--muted); border-radius:8px; padding:0.4rem 0.9rem; font-family:'Space Grotesk',sans-serif; font-size:0.82rem; cursor:pointer; transition:all 0.2s; }
+  .board-back:hover { color:var(--text); border-color:var(--text); }
+  .board-cols { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:1rem; align-items:start; }
+  .board-col { background:var(--bg2); border-radius:14px; padding:0.9rem; }
+  .col-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:0.8rem; }
+  .col-title { font-weight:700; font-size:0.85rem; display:flex; align-items:center; gap:0.5rem; }
+  .col-count { background:var(--muted); color:white; border-radius:10px; padding:0.1rem 0.45rem; font-size:0.68rem; font-weight:700; }
+  .col-add { background:none; border:none; color:var(--muted); cursor:pointer; font-size:1rem; padding:0.2rem; border-radius:6px; transition:all 0.2s; }
+  .col-add:hover { background:var(--card); color:var(--accent); }
+  .task-card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:0.8rem 0.9rem; margin-bottom:0.6rem; cursor:pointer; transition:all 0.2s; }
+  .task-card:hover { box-shadow:0 4px 12px rgba(0,0,0,0.08); transform:translateY(-1px); }
+  .task-title { font-weight:600; font-size:0.88rem; margin-bottom:0.5rem; line-height:1.3; }
+  .task-badges { display:flex; flex-wrap:wrap; gap:0.3rem; margin-bottom:0.5rem; }
+  .priority-badge { padding:0.15rem 0.5rem; border-radius:6px; font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.3px; }
+  .p-high { background:#fde8e8; color:var(--danger); }
+  .p-medium { background:#fef3e2; color:var(--warn); }
+  .p-low { background:#e8f5ee; color:var(--success); }
+  .task-footer { display:flex; align-items:center; justify-content:space-between; font-size:0.75rem; color:var(--muted); }
+  .task-due { display:flex; align-items:center; gap:0.3rem; }
+  .task-assignee { width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.6rem; font-weight:700; color:white; }
+
+  /* TASK DETAIL MODAL */
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:999; align-items:flex-start; justify-content:flex-end; }
+  .modal-overlay.open { display:flex; }
+  .task-modal { background:var(--card); width:100%; max-width:440px; height:100vh; overflow-y:auto; padding:1.8rem; box-shadow:-8px 0 40px rgba(0,0,0,0.12); }
+  .task-modal h3 { font-family:'Fraunces',serif; font-size:1.3rem; font-weight:700; margin-bottom:1.5rem; padding-right:2rem; }
+  .modal-close { position:absolute; top:1.2rem; right:1.2rem; background:none; border:none; font-size:1.3rem; cursor:pointer; color:var(--muted); }
+  .modal-close:hover { color:var(--text); }
+  .task-status-selector { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1.2rem; }
+  .status-opt { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:0.35rem 0.8rem; font-size:0.78rem; font-weight:600; cursor:pointer; transition:all 0.2s; }
+  .status-opt.active { background:var(--accent); color:white; border-color:var(--accent); }
+  .meta-row { display:flex; align-items:flex-start; gap:0.6rem; margin-bottom:0.9rem; font-size:0.85rem; }
+  .meta-icon { font-size:1rem; width:20px; text-align:center; flex-shrink:0; margin-top:1px; }
+  .meta-label { color:var(--muted); font-size:0.75rem; font-weight:600; text-transform:uppercase; letter-spacing:0.4px; display:block; margin-bottom:0.2rem; }
+  .comments-wrap { border-top:1px solid var(--border); padding-top:1.2rem; margin-top:1.2rem; }
+  .comments-title { font-weight:700; font-size:0.9rem; margin-bottom:0.9rem; }
+  .comment-item { display:flex; gap:0.6rem; margin-bottom:0.9rem; }
+  .comment-bubble { flex:1; background:var(--bg); border-radius:10px; padding:0.55rem 0.8rem; }
+  .comment-author { font-weight:600; font-size:0.78rem; margin-bottom:0.2rem; }
+  .comment-text { font-size:0.85rem; line-height:1.5; }
+  .comment-time { font-size:0.7rem; color:var(--muted); margin-top:0.2rem; }
+  .add-comment-row { display:flex; gap:0.5rem; margin-top:0.5rem; }
+  .comment-inp { flex:1; border:1px solid var(--border); background:var(--bg); border-radius:10px; padding:0.5rem 0.8rem; font-family:'Space Grotesk',sans-serif; font-size:0.85rem; outline:none; color:var(--text); }
+  .comment-inp:focus { border-color:var(--accent); }
+  .comment-send { background:var(--accent); color:white; border:none; border-radius:10px; padding:0.5rem 0.9rem; font-size:0.82rem; font-weight:600; cursor:pointer; }
+
+  /* GENERIC MODAL */
+  .gmodal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:1000; align-items:center; justify-content:center; }
+  .gmodal-overlay.open { display:flex; }
+  .gmodal { background:var(--card); border-radius:20px; padding:2rem; width:90%; max-width:480px; max-height:90vh; overflow-y:auto; }
+  .gmodal h3 { font-family:'Fraunces',serif; font-size:1.3rem; font-weight:700; margin-bottom:1.5rem; }
+  .gmodal-close { float:right; background:none; border:none; color:var(--muted); font-size:1.2rem; cursor:pointer; margin-top:-2px; }
+  .gmodal-btn { width:100%; background:var(--accent); color:white; border:none; border-radius:12px; padding:0.75rem; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:0.95rem; cursor:pointer; margin-top:1rem; }
+
+  .toast { position:fixed; bottom:2rem; right:2rem; background:var(--accent); color:white; padding:0.75rem 1.4rem; border-radius:10px; font-size:0.88rem; font-weight:500; z-index:9999; transform:translateY(100px); opacity:0; transition:all 0.3s; box-shadow:0 4px 20px rgba(0,0,0,0.2); }
+  .toast.show { transform:translateY(0); opacity:1; }
+  .chip { display:inline-flex; align-items:center; gap:0.3rem; background:var(--bg2); border:1px solid var(--border); border-radius:6px; padding:0.2rem 0.6rem; font-size:0.78rem; font-weight:500; }
+  .empty-state { text-align:center; padding:4rem 2rem; color:var(--muted); }
+  .empty-state .ei { font-size:3rem; margin-bottom:1rem; }
+  .divider { border:none; border-top:1px solid var(--border); margin:1.5rem 0; }
+</style>
+</head>
+<body>
+
+<!-- AUTH -->
+<div id="authScreen" class="auth-screen">
+  <div class="auth-box">
+    <div class="auth-brand">Forge</div>
+    <div class="auth-tagline">Build projects. Manage tasks. Ship faster.</div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="authTab('login')">Sign In</button>
+      <button class="auth-tab" onclick="authTab('register')">Register</button>
+    </div>
+    <div id="authMsg" class="auth-msg"></div>
+    <div id="loginF">
+      <div class="fg"><label>Email</label><input type="email" id="lEmail" placeholder="you@email.com"></div>
+      <div class="fg"><label>Password</label><input type="password" id="lPass" placeholder="••••••••"></div>
+      <button class="auth-btn" onclick="doLogin()">Sign In →</button>
+      <p style="text-align:center;font-size:0.78rem;color:var(--muted);margin-top:1rem">Demo: <strong>sunny@forge.dev</strong> / <strong>forge123</strong></p>
+    </div>
+    <div id="registerF" style="display:none">
+      <div class="fg"><label>Full Name</label><input type="text" id="rName" placeholder="Sunny Lakhwani"></div>
+      <div class="fg"><label>Email</label><input type="email" id="rEmail" placeholder="you@email.com"></div>
+      <div class="fg"><label>Password</label><input type="password" id="rPass" placeholder="Min 6 characters"></div>
+      <button class="auth-btn" onclick="doRegister()">Create Account →</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP SHELL -->
+<div id="appShell" style="display:none" class="shell">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="s-brand">⚒ Forge</div>
+    <div class="s-section">Main</div>
+    <button class="s-item active" id="si-dashboard" onclick="nav('dashboard')"><span class="s-icon">📊</span> Dashboard</button>
+    <button class="s-item" id="si-projects" onclick="nav('projects')"><span class="s-icon">📁</span> Projects</button>
+    <button class="s-item" id="si-mytasks" onclick="nav('mytasks')"><span class="s-icon">✅</span> My Tasks <span class="s-badge" id="myTaskBadge">0</span></button>
+    <button class="s-item" id="si-team" onclick="nav('team')"><span class="s-icon">👥</span> Team</button>
+    <div class="s-section">Account</div>
+    <button class="s-item" onclick="doLogout()"><span class="s-icon">🚪</span> Log Out</button>
+    <div class="s-user">
+      <div class="s-avatar" id="sAvatar"></div>
+      <div><div class="s-user-name" id="sName"></div><div class="s-user-role">Member</div></div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-header">
+        <div class="page-title">Good day, <span id="dashGreetName"></span> 👋</div>
+        <button class="btn btn-primary" onclick="openNewProject()">+ New Project</button>
+      </div>
+      <div class="stats-grid" id="dashStats"></div>
+      <h3 style="font-family:'Fraunces',serif;font-size:1.1rem;font-weight:700;margin-bottom:1rem">Recent Projects</h3>
+      <div class="projects-grid" id="dashProjects"></div>
+    </div>
+
+    <!-- PROJECTS -->
+    <div class="page" id="page-projects">
+      <div class="page-header">
+        <div class="page-title">Projects</div>
+        <button class="btn btn-primary" onclick="openNewProject()">+ New Project</button>
+      </div>
+      <div class="projects-grid" id="projectsList"></div>
+    </div>
+
+    <!-- BOARD (PROJECT VIEW) -->
+    <div class="page" id="page-board">
+      <div class="board-header">
+        <div>
+          <button class="board-back" onclick="nav('projects')">← Projects</button>
+          <div class="page-title" id="boardTitle" style="margin-top:0.5rem"></div>
+          <div id="boardDesc" style="color:var(--muted);font-size:0.85rem;margin-top:0.2rem"></div>
+        </div>
+        <div style="display:flex;gap:0.7rem;flex-wrap:wrap">
+          <button class="btn btn-outline btn-sm" onclick="openAddMember()">+ Member</button>
+          <button class="btn btn-primary btn-sm" onclick="openNewTask()">+ Task</button>
+          <button class="btn btn-sm" style="background:#fde8e8;color:var(--danger);border:none" onclick="deleteProject()">Delete</button>
+        </div>
+      </div>
+      <div id="membersRow" style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1.5rem;flex-wrap:wrap"></div>
+      <div class="board-cols" id="boardColumns"></div>
+    </div>
+
+    <!-- MY TASKS -->
+    <div class="page" id="page-mytasks">
+      <div class="page-header"><div class="page-title">My Tasks</div></div>
+      <div id="myTasksList"></div>
+    </div>
+
+    <!-- TEAM -->
+    <div class="page" id="page-team">
+      <div class="page-header"><div class="page-title">Team</div></div>
+      <div id="teamList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- NEW PROJECT MODAL -->
+<div class="gmodal-overlay" id="newProjectModal">
+  <div class="gmodal">
+    <h3><button class="gmodal-close" onclick="closeGModal('newProjectModal')">✕</button>New Project</h3>
+    <div class="fg"><label>Project Name</label><input type="text" id="npName" placeholder="e.g. E-commerce Redesign"></div>
+    <div class="fg"><label>Description</label><textarea id="npDesc" placeholder="What is this project about?"></textarea></div>
+    <div class="fg"><label>Color</label>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.3rem" id="colorPicker">
+        <div class="color-opt" onclick="selectColor('#5b3de8')" style="width:28px;height:28px;border-radius:50%;background:#5b3de8;cursor:pointer;border:3px solid #5b3de8"></div>
+        <div class="color-opt" onclick="selectColor('#2e9e5f')" style="width:28px;height:28px;border-radius:50%;background:#2e9e5f;cursor:pointer"></div>
+        <div class="color-opt" onclick="selectColor('#d48c2a')" style="width:28px;height:28px;border-radius:50%;background:#d48c2a;cursor:pointer"></div>
+        <div class="color-opt" onclick="selectColor('#d63a3a')" style="width:28px;height:28px;border-radius:50%;background:#d63a3a;cursor:pointer"></div>
+        <div class="color-opt" onclick="selectColor('#2a7ad4')" style="width:28px;height:28px;border-radius:50%;background:#2a7ad4;cursor:pointer"></div>
+        <div class="color-opt" onclick="selectColor('#7258f0')" style="width:28px;height:28px;border-radius:50%;background:#7258f0;cursor:pointer"></div>
+      </div>
+    </div>
+    <button class="gmodal-btn" onclick="createProject()">Create Project</button>
+  </div>
+</div>
+
+<!-- NEW TASK MODAL -->
+<div class="gmodal-overlay" id="newTaskModal">
+  <div class="gmodal">
+    <h3><button class="gmodal-close" onclick="closeGModal('newTaskModal')">✕</button>Add Task</h3>
+    <div class="fg"><label>Task Title</label><input type="text" id="ntTitle" placeholder="e.g. Design homepage mockup"></div>
+    <div class="fg"><label>Description</label><textarea id="ntDesc" placeholder="Details about this task..."></textarea></div>
+    <div class="fg"><label>Status</label>
+      <select id="ntStatus">
+        <option value="todo">To Do</option>
+        <option value="inprogress">In Progress</option>
+        <option value="review">In Review</option>
+        <option value="done">Done</option>
+      </select>
+    </div>
+    <div class="fg"><label>Priority</label>
+      <select id="ntPriority">
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+        <option value="low">Low</option>
+      </select>
+    </div>
+    <div class="fg"><label>Due Date</label><input type="date" id="ntDue"></div>
+    <div class="fg"><label>Assign to</label><select id="ntAssign"></select></div>
+    <button class="gmodal-btn" onclick="createTask()">Add Task</button>
+  </div>
+</div>
+
+<!-- ADD MEMBER MODAL -->
+<div class="gmodal-overlay" id="addMemberModal">
+  <div class="gmodal">
+    <h3><button class="gmodal-close" onclick="closeGModal('addMemberModal')">✕</button>Add Member</h3>
+    <div class="fg"><label>Select Team Member</label><select id="memberSelect"></select></div>
+    <button class="gmodal-btn" onclick="addMemberToProject()">Add Member</button>
+  </div>
+</div>
+
+<!-- TASK DETAIL PANEL -->
+<div class="modal-overlay" id="taskPanel">
+  <div class="task-modal" style="position:relative">
+    <button class="modal-close" onclick="closeTaskPanel()">✕</button>
+    <h3 id="tpTitle"></h3>
+    <div class="task-status-selector" id="tpStatusBtns"></div>
+    <div class="meta-row"><span class="meta-icon">🚨</span><div><span class="meta-label">Priority</span><div id="tpPriority"></div></div></div>
+    <div class="meta-row"><span class="meta-icon">📅</span><div><span class="meta-label">Due Date</span><div id="tpDue"></div></div></div>
+    <div class="meta-row"><span class="meta-icon">👤</span><div><span class="meta-label">Assigned To</span><div id="tpAssign"></div></div></div>
+    <div class="meta-row"><span class="meta-icon">📝</span><div><span class="meta-label">Description</span><div id="tpDesc" style="font-size:0.88rem;line-height:1.6;color:var(--muted);margin-top:0.2rem"></div></div></div>
+    <hr class="divider">
+    <div style="display:flex;gap:0.5rem;justify-content:flex-end">
+      <button class="btn btn-sm btn-danger" onclick="deleteTask()">Delete Task</button>
+    </div>
+    <div class="comments-wrap">
+      <div class="comments-title">💬 Comments</div>
+      <div id="tpComments"></div>
+      <div class="add-comment-row">
+        <input class="comment-inp" id="tpCommentInput" placeholder="Write a comment..." onkeydown="if(event.key==='Enter')addComment()">
+        <button class="comment-send" onclick="addComment()">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ========== HELPERS ==========
+const COLORS_POOL = ['#5b3de8','#2e9e5f','#d48c2a','#d63a3a','#2a7ad4','#7258f0','#c2397a','#1a8a8a'];
+function getColor(name) { let h=0; for(let c of (name||'?')) h+=c.charCodeAt(0); return COLORS_POOL[h%COLORS_POOL.length]; }
+function getInit(name) { return (name||'?').split(' ').map(w=>w[0]).join('').toUpperCase().substring(0,2); }
+function avHTML(name, size=32) { return `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${getColor(name)};color:white;display:flex;align-items:center;justify-content:center;font-size:${size*0.32}px;font-weight:700;flex-shrink:0">${getInit(name)}</div>`; }
+function timeAgo(ts) { const d=Date.now()-ts; if(d<60000)return'just now'; if(d<3600000)return Math.floor(d/60000)+'m ago'; if(d<86400000)return Math.floor(d/3600000)+'h ago'; return Math.floor(d/86400000)+'d ago'; }
+function uid() { return 'id'+Date.now()+Math.random().toString(36).substr(2,5); }
+
+// ========== STATE ==========
+let users = JSON.parse(localStorage.getItem('forge_users')||'[]');
+let projects = JSON.parse(localStorage.getItem('forge_projects')||'[]');
+let tasks = JSON.parse(localStorage.getItem('forge_tasks')||'[]');
+let currentUser = JSON.parse(localStorage.getItem('forge_user')||'null');
+let currentProject = null;
+let currentTask = null;
+let selectedColor = '#5b3de8';
+
+// SEED
+if (users.length===0) {
+  users = [
+    {id:'u1',name:'Sunny Lakhwani',email:'sunny@forge.dev',password:'forge123'},
+    {id:'u2',name:'Ali Hassan',email:'ali@forge.dev',password:'demo'},
+    {id:'u3',name:'Zara Khan',email:'zara@forge.dev',password:'demo'},
+    {id:'u4',name:'John Smith',email:'john@forge.dev',password:'demo'},
+  ];
+  projects = [
+    {id:'proj1',name:'E-commerce Platform',desc:'Build a full-stack shopping site with cart and payments.',color:'#5b3de8',owner:'u1',members:['u1','u2','u3'],createdAt:Date.now()-864000000},
+    {id:'proj2',name:'Mobile App Redesign',desc:'Redesign the mobile app UX for better conversions.',color:'#2e9e5f',owner:'u1',members:['u1','u4'],createdAt:Date.now()-432000000},
+    {id:'proj3',name:'API Integration',desc:'Integrate third-party APIs: payments, maps, notifications.',color:'#d48c2a',owner:'u2',members:['u1','u2'],createdAt:Date.now()-86400000},
+  ];
+  tasks = [
+    {id:'t1',projectId:'proj1',title:'Design homepage mockup',desc:'Create Figma wireframes for the landing page.',status:'done',priority:'high',due:'2025-06-01',assignee:'u2',comments:[{userId:'u1',text:'Great progress on this!',time:Date.now()-3600000}],createdAt:Date.now()-700000000},
+    {id:'t2',projectId:'proj1',title:'Build product listing API',desc:'REST endpoint for products with filters, pagination.',status:'inprogress',priority:'high',due:'2025-06-15',assignee:'u1',comments:[],createdAt:Date.now()-600000000},
+    {id:'t3',projectId:'proj1',title:'Shopping cart functionality',desc:'Add/remove items, qty controls, localStorage sync.',status:'todo',priority:'high',due:'2025-06-20',assignee:'u1',comments:[],createdAt:Date.now()-500000000},
+    {id:'t4',projectId:'proj1',title:'User auth system',desc:'JWT-based login, registration, password reset.',status:'done',priority:'medium',due:'2025-05-30',assignee:'u3',comments:[],createdAt:Date.now()-650000000},
+    {id:'t5',projectId:'proj1',title:'Payment gateway integration',desc:'Stripe integration with webhook handling.',status:'review',priority:'high',due:'2025-06-25',assignee:'u2',comments:[],createdAt:Date.now()-400000000},
+    {id:'t6',projectId:'proj2',title:'User research sessions',desc:'Conduct 5 user interviews to identify pain points.',status:'done',priority:'medium',due:'2025-05-20',assignee:'u4',comments:[],createdAt:Date.now()-300000000},
+    {id:'t7',projectId:'proj2',title:'Prototype new navigation',desc:'Design and test new bottom navigation patterns.',status:'inprogress',priority:'medium',due:'2025-06-10',assignee:'u1',comments:[],createdAt:Date.now()-200000000},
+    {id:'t8',projectId:'proj3',title:'Stripe API setup',desc:'Configure test and production Stripe keys.',status:'todo',priority:'high',due:'2025-06-05',assignee:'u2',comments:[],createdAt:Date.now()-100000000},
+  ];
+  save();
+}
+
+function save() {
+  localStorage.setItem('forge_users',JSON.stringify(users));
+  localStorage.setItem('forge_projects',JSON.stringify(projects));
+  localStorage.setItem('forge_tasks',JSON.stringify(tasks));
+  if (currentUser) localStorage.setItem('forge_user',JSON.stringify(currentUser));
+}
+
+// ========== AUTH ==========
+function authTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('loginF').style.display=tab==='login'?'block':'none';
+  document.getElementById('registerF').style.display=tab==='register'?'block':'none';
+  document.getElementById('authMsg').className='auth-msg';
+}
+function doLogin() {
+  const e=document.getElementById('lEmail').value.trim();
+  const p=document.getElementById('lPass').value;
+  const u=users.find(u=>u.email===e&&u.password===p);
+  if(!u){showAuthMsg('Invalid credentials.','error');return;}
+  currentUser=u; save(); initApp();
+}
+function doRegister() {
+  const name=document.getElementById('rName').value.trim();
+  const email=document.getElementById('rEmail').value.trim();
+  const pass=document.getElementById('rPass').value;
+  if(!name||!email||!pass){showAuthMsg('Fill all fields.','error');return;}
+  if(pass.length<6){showAuthMsg('Password too short.','error');return;}
+  if(users.find(u=>u.email===email)){showAuthMsg('Email already used.','error');return;}
+  const u={id:uid(),name,email,password:pass};
+  users.push(u); currentUser=u; save(); initApp();
+}
+function doLogout() {
+  currentUser=null; localStorage.removeItem('forge_user');
+  document.getElementById('appShell').style.display='none';
+  document.getElementById('authScreen').style.display='flex';
+}
+function showAuthMsg(msg,type) { const el=document.getElementById('authMsg'); el.textContent=msg; el.className='auth-msg '+type; }
+
+// ========== INIT ==========
+function initApp() {
+  document.getElementById('authScreen').style.display='none';
+  document.getElementById('appShell').style.display='grid';
+  document.getElementById('sName').textContent=currentUser.name;
+  const av=document.getElementById('sAvatar');
+  av.style.background=getColor(currentUser.name); av.textContent=getInit(currentUser.name);
+  nav('dashboard');
+}
+
+// ========== NAV ==========
+function nav(page) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.s-item[id]').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  const si=document.getElementById('si-'+page); if(si)si.classList.add('active');
+  if(page==='dashboard')renderDashboard();
+  if(page==='projects')renderProjects();
+  if(page==='mytasks')renderMyTasks();
+  if(page==='team')renderTeam();
+  updateMyTaskBadge();
+}
+
+function updateMyTaskBadge() {
+  const count=tasks.filter(t=>t.assignee===currentUser.id&&t.status!=='done').length;
+  document.getElementById('myTaskBadge').textContent=count;
+}
+
+// ========== DASHBOARD ==========
+function renderDashboard() {
+  document.getElementById('dashGreetName').textContent=currentUser.name.split(' ')[0];
+  const myProjs=projects.filter(p=>p.members.includes(currentUser.id));
+  const myTasks=tasks.filter(t=>t.assignee===currentUser.id);
+  const openTasks=myTasks.filter(t=>t.status!=='done').length;
+  const doneTasks=myTasks.filter(t=>t.status==='done').length;
+  document.getElementById('dashStats').innerHTML=`
+    <div class="stat-card"><div class="stat-num" style="color:var(--accent)">${myProjs.length}</div><div class="stat-label">My Projects</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--warn)">${openTasks}</div><div class="stat-label">Open Tasks</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--success)">${doneTasks}</div><div class="stat-label">Completed</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--info)">${users.length}</div><div class="stat-label">Team Members</div></div>
+  `;
+  document.getElementById('dashProjects').innerHTML=myProjs.slice(0,4).map(p=>projectCardHTML(p)).join('') || '<div class="empty-state"><div class="ei">📁</div><p>No projects yet. Create one!</p></div>';
+}
+
+// ========== PROJECTS ==========
+function renderProjects() {
+  const myProjs=projects.filter(p=>p.members.includes(currentUser.id));
+  document.getElementById('projectsList').innerHTML=myProjs.map(p=>projectCardHTML(p)).join('') || '<div class="empty-state"><div class="ei">📁</div><p>No projects yet.</p></div>';
+}
+
+function projectCardHTML(p) {
+  const ptasks=tasks.filter(t=>t.projectId===p.id);
+  const done=ptasks.filter(t=>t.status==='done').length;
+  const pct=ptasks.length===0?0:Math.round(done/ptasks.length*100);
+  const members=p.members.map(mid=>users.find(u=>u.id===mid)).filter(Boolean);
+  return `<div class="project-card" onclick="openBoard('${p.id}')">
+    <div class="project-color-strip" style="background:${p.color}"></div>
+    <div class="project-name">${p.name}</div>
+    <div class="project-desc">${p.desc}</div>
+    <div class="project-meta">
+      <span class="chip">📋 ${ptasks.length} tasks</span>
+      <span style="font-size:0.78rem;font-weight:600;color:${pct===100?'var(--success)':'var(--muted)'}">${pct}%</span>
+    </div>
+    <div class="project-progress" style="margin-top:0.7rem">
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${p.color}"></div></div>
+    </div>
+    <div class="member-avatars" style="margin-top:0.8rem">
+      ${members.slice(0,5).map(m=>`<div class="member-pip" style="background:${getColor(m.name)}">${getInit(m.name)}</div>`).join('')}
+      ${members.length>5?`<div class="member-pip" style="background:var(--muted)">+${members.length-5}</div>`:''}
+    </div>
+  </div>`;
+}
+
+// ========== BOARD ==========
+function openBoard(projectId) {
+  currentProject=projects.find(p=>p.id===projectId);
+  if(!currentProject)return;
+  document.getElementById('boardTitle').textContent=currentProject.name;
+  document.getElementById('boardDesc').textContent=currentProject.desc;
+  renderMembersRow();
+  renderBoard();
+  nav('board');
+  document.getElementById('si-projects').classList.add('active');
+}
+
+function renderMembersRow() {
+  const mems=currentProject.members.map(mid=>users.find(u=>u.id===mid)).filter(Boolean);
+  document.getElementById('membersRow').innerHTML=`<span style="font-size:0.78rem;color:var(--muted);font-weight:600">Members:</span>`+mems.map(m=>`<div title="${m.name}">${avHTML(m.name,30)}</div>`).join('')+`<span style="font-size:0.78rem;color:var(--muted)">${mems.length} member${mems.length!==1?'s':''}</span>`;
+}
+
+const COLS = [
+  {id:'todo',label:'To Do',color:'#8b8a88'},
+  {id:'inprogress',label:'In Progress',color:'#2a7ad4'},
+  {id:'review',label:'In Review',color:'#d48c2a'},
+  {id:'done',label:'Done',color:'#2e9e5f'},
+];
+
+function renderBoard() {
+  const ptasks=tasks.filter(t=>t.projectId===currentProject.id);
+  document.getElementById('boardColumns').innerHTML=COLS.map(col=>{
+    const colTasks=ptasks.filter(t=>t.status===col.id);
+    return `<div class="board-col">
+      <div class="col-header">
+        <div class="col-title"><span style="width:8px;height:8px;border-radius:50%;background:${col.color};display:inline-block"></span>${col.label}<span class="col-count">${colTasks.length}</span></div>
+        <button class="col-add" onclick="openNewTaskInCol('${col.id}')" title="Add task">+</button>
+      </div>
+      ${colTasks.map(t=>taskCardHTML(t)).join('')}
+    </div>`;
+  }).join('');
+}
+
+function taskCardHTML(t) {
+  const assignee=users.find(u=>u.id===t.assignee);
+  const isOverdue=t.due&&new Date(t.due)<new Date()&&t.status!=='done';
+  return `<div class="task-card" onclick="openTask('${t.id}')">
+    <div class="task-title">${t.title}</div>
+    <div class="task-badges">
+      <span class="priority-badge p-${t.priority}">${t.priority}</span>
+      ${isOverdue?'<span class="priority-badge" style="background:#fde8e8;color:var(--danger)">Overdue</span>':''}
+    </div>
+    <div class="task-footer">
+      <div class="task-due">${t.due?'📅 '+t.due:''}</div>
+      ${assignee?`<div class="task-assignee" style="background:${getColor(assignee.name)}" title="${assignee.name}">${getInit(assignee.name)}</div>`:''}
+    </div>
+  </div>`;
+}
+
+function openTask(taskId) {
+  currentTask=tasks.find(t=>t.id===taskId);
+  if(!currentTask)return;
+  document.getElementById('tpTitle').textContent=currentTask.title;
+  document.getElementById('tpDesc').textContent=currentTask.desc||'No description provided.';
+  document.getElementById('tpDue').textContent=currentTask.due||'—';
+  const assignee=users.find(u=>u.id===currentTask.assignee);
+  document.getElementById('tpAssign').textContent=assignee?assignee.name:'Unassigned';
+  document.getElementById('tpPriority').innerHTML=`<span class="priority-badge p-${currentTask.priority}">${currentTask.priority}</span>`;
+  document.getElementById('tpStatusBtns').innerHTML=COLS.map(c=>`<button class="status-opt ${currentTask.status===c.id?'active':''}" onclick="changeStatus('${c.id}')">${c.label}</button>`).join('');
+  renderTaskComments();
+  document.getElementById('taskPanel').classList.add('open');
+}
+
+function changeStatus(status) {
+  currentTask.status=status; save(); renderBoard(); renderMyTasks(); updateMyTaskBadge();
+  document.getElementById('tpStatusBtns').innerHTML=COLS.map(c=>`<button class="status-opt ${currentTask.status===c.id?'active':''}" onclick="changeStatus('${c.id}')">${c.label}</button>`).join('');
+  showToast('Task moved to '+COLS.find(c=>c.id===status).label);
+}
+
+function deleteTask() {
+  tasks=tasks.filter(t=>t.id!==currentTask.id); save(); closeTaskPanel(); renderBoard(); updateMyTaskBadge();
+  showToast('Task deleted.');
+}
+
+function closeTaskPanel() { document.getElementById('taskPanel').classList.remove('open'); }
+
+function renderTaskComments() {
+  const el=document.getElementById('tpComments');
+  el.innerHTML=(currentTask.comments||[]).map(c=>{
+    const u=users.find(u=>u.id===c.userId);
+    return `<div class="comment-item">${avHTML(u?u.name:'?',30)}<div class="comment-bubble"><div class="comment-author">${u?u.name:'Unknown'}</div><div class="comment-text">${c.text}</div><div class="comment-time">${timeAgo(c.time)}</div></div></div>`;
+  }).join('');
+}
+
+function addComment() {
+  const text=document.getElementById('tpCommentInput').value.trim();
+  if(!text)return;
+  if(!currentTask.comments)currentTask.comments=[];
+  currentTask.comments.push({userId:currentUser.id,text,time:Date.now()});
+  save(); renderTaskComments();
+  document.getElementById('tpCommentInput').value='';
+}
+
+// ========== NEW TASK/PROJECT ==========
+let newTaskStatus='todo';
+function openNewTask() {
+  newTaskStatus='todo';
+  populateTaskForm();
+  document.getElementById('newTaskModal').classList.add('open');
+}
+function openNewTaskInCol(status) {
+  newTaskStatus=status;
+  populateTaskForm(status);
+  document.getElementById('newTaskModal').classList.add('open');
+}
+function populateTaskForm(status='todo') {
+  document.getElementById('ntTitle').value='';
+  document.getElementById('ntDesc').value='';
+  document.getElementById('ntStatus').value=status;
+  document.getElementById('ntPriority').value='medium';
+  document.getElementById('ntDue').value='';
+  const mems=currentProject?currentProject.members.map(mid=>users.find(u=>u.id===mid)).filter(Boolean):users;
+  document.getElementById('ntAssign').innerHTML=`<option value="">Unassigned</option>`+mems.map(u=>`<option value="${u.id}">${u.name}</option>`).join('');
+}
+
+function createTask() {
+  const title=document.getElementById('ntTitle').value.trim();
+  if(!title){showToast('Task title required!');return;}
+  const task={id:uid(),projectId:currentProject.id,title,desc:document.getElementById('ntDesc').value.trim(),status:document.getElementById('ntStatus').value,priority:document.getElementById('ntPriority').value,due:document.getElementById('ntDue').value||null,assignee:document.getElementById('ntAssign').value||null,comments:[],createdAt:Date.now()};
+  tasks.push(task); save(); closeGModal('newTaskModal'); renderBoard(); updateMyTaskBadge();
+  showToast('Task added!');
+}
+
+let newProjColor='#5b3de8';
+function selectColor(color) {
+  newProjColor=color;
+  document.querySelectorAll('.color-opt').forEach(el=>el.style.outline='none');
+  event.target.style.outline=`3px solid ${color}`;
+  event.target.style.outlineOffset='2px';
+}
+function openNewProject() {
+  document.getElementById('npName').value=''; document.getElementById('npDesc').value='';
+  document.getElementById('newProjectModal').classList.add('open');
+}
+function createProject() {
+  const name=document.getElementById('npName').value.trim();
+  if(!name){showToast('Project name required!');return;}
+  const p={id:uid(),name,desc:document.getElementById('npDesc').value.trim(),color:newProjColor,owner:currentUser.id,members:[currentUser.id],createdAt:Date.now()};
+  projects.push(p); save(); closeGModal('newProjectModal'); renderDashboard(); renderProjects();
+  showToast('Project created!');
+}
+
+function deleteProject() {
+  if(!confirm('Delete this project and all its tasks?'))return;
+  projects=projects.filter(p=>p.id!==currentProject.id);
+  tasks=tasks.filter(t=>t.projectId!==currentProject.id);
+  save(); nav('projects');
+  showToast('Project deleted.');
+}
+
+function openAddMember() {
+  const nonMembers=users.filter(u=>!currentProject.members.includes(u.id));
+  if(nonMembers.length===0){showToast('All team members are already added!');return;}
+  document.getElementById('memberSelect').innerHTML=nonMembers.map(u=>`<option value="${u.id}">${u.name}</option>`).join('');
+  document.getElementById('addMemberModal').classList.add('open');
+}
+function addMemberToProject() {
+  const userId=document.getElementById('memberSelect').value;
+  if(!userId)return;
+  currentProject.members.push(userId);
+  save(); closeGModal('addMemberModal'); renderMembersRow(); renderBoard();
+  const u=users.find(u=>u.id===userId);
+  showToast((u?u.name:'Member')+' added to project!');
+}
+
+function closeGModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ========== MY TASKS ==========
+function renderMyTasks() {
+  const myTasks=tasks.filter(t=>t.assignee===currentUser.id).sort((a,b)=>b.createdAt-a.createdAt);
+  if(myTasks.length===0){
+    document.getElementById('myTasksList').innerHTML='<div class="empty-state"><div class="ei">✅</div><p>No tasks assigned to you.</p></div>'; return;
+  }
+  const grouped={};
+  COLS.forEach(c=>{grouped[c.id]=myTasks.filter(t=>t.status===c.id);});
+  document.getElementById('myTasksList').innerHTML=COLS.filter(c=>grouped[c.id].length>0).map(col=>`
+    <h3 style="font-weight:700;font-size:0.85rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin:1.2rem 0 0.7rem">${col.label} (${grouped[col.id].length})</h3>
+    ${grouped[col.id].map(t=>{
+      const proj=projects.find(p=>p.id===t.projectId);
+      return `<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:0.9rem 1.1rem;margin-bottom:0.6rem;display:flex;align-items:center;gap:0.9rem;cursor:pointer" onclick="openBoardToTask('${t.id}')">
+        <div style="width:4px;height:40px;border-radius:2px;background:${proj?proj.color:'var(--muted)'}"></div>
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:0.9rem">${t.title}</div>
+          <div style="font-size:0.75rem;color:var(--muted);margin-top:0.2rem">${proj?proj.name:'Unknown project'}${t.due?' · Due '+t.due:''}</div>
+        </div>
+        <span class="priority-badge p-${t.priority}">${t.priority}</span>
+      </div>`;
+    }).join('')}
+  `).join('');
+}
+
+function openBoardToTask(taskId) {
+  const task=tasks.find(t=>t.id===taskId);
+  if(!task)return;
+  const proj=projects.find(p=>p.id===task.projectId);
+  if(!proj)return;
+  openBoard(proj.id);
+  setTimeout(()=>openTask(taskId),100);
+}
+
+// ========== TEAM ==========
+function renderTeam() {
+  document.getElementById('teamList').innerHTML=users.map(u=>{
+    const userProjs=projects.filter(p=>p.members.includes(u.id));
+    const userTasks=tasks.filter(t=>t.assignee===u.id);
+    return `<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem;margin-bottom:0.8rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+      ${avHTML(u.name,48)}
+      <div style="flex:1;min-width:160px">
+        <div style="font-weight:700;font-size:0.95rem">${u.name} ${u.id===currentUser.id?'<span style="font-size:0.7rem;background:var(--accent-light);color:var(--accent);padding:0.15rem 0.5rem;border-radius:6px;font-weight:600">You</span>':''}</div>
+        <div style="font-size:0.8rem;color:var(--muted);margin-top:0.2rem">${u.email}</div>
+      </div>
+      <div style="display:flex;gap:1.5rem;font-size:0.82rem;color:var(--muted)">
+        <div><div style="font-family:'Fraunces',serif;font-size:1.1rem;font-weight:700;color:var(--text)">${userProjs.length}</div>Projects</div>
+        <div><div style="font-family:'Fraunces',serif;font-size:1.1rem;font-weight:700;color:var(--text)">${userTasks.length}</div>Tasks</div>
+        <div><div style="font-family:'Fraunces',serif;font-size:1.1rem;font-weight:700;color:var(--success)">${userTasks.filter(t=>t.status==='done').length}</div>Done</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function showToast(msg) {
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// INIT
+if(currentUser){ currentUser=users.find(u=>u.id===currentUser.id)||currentUser; initApp(); }
+</script>
+</body>
+</html>
