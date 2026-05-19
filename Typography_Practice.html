@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Typography Practice — CodeAlpha Task 03</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Outfit:wght@200;300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1a1410;
+    --ink-soft: #3d3530;
+    --ink-muted: #7a6f68;
+    --ink-ghost: #b5a99f;
+    --paper: #faf7f2;
+    --cream: #f3ede3;
+    --rule: #d9cfc5;
+    --accent: #c04b2f;
+    --accent-soft: #e8d0c8;
+    --gold: #b08840;
+    --gold-light: #f0e4c4;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Outfit', sans-serif;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 56px 40px 100px;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 52px;
+    margin-bottom: 64px;
+    position: relative;
+  }
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 22px;
+  }
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(60px, 11vw, 104px);
+    font-weight: 900;
+    line-height: 0.95;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .hero-sub {
+    font-family: 'Outfit', sans-serif;
+    font-size: 15.5px;
+    font-weight: 300;
+    color: var(--ink-muted);
+    line-height: 1.75;
+    max-width: 500px;
+    margin-top: 26px;
+    letter-spacing: 0.01em;
+  }
+  .hero-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 34px;
+  }
+  .hero-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-ghost);
+    border: 1px solid var(--rule);
+    padding: 5px 12px;
+    border-radius: 2px;
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--ink-ghost);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  .section { margin-bottom: 72px; }
+
+  /* ── FONT PAIRS ── */
+  .pair-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--rule);
+  }
+  .pair-cell {
+    padding: 34px 30px;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .pair-cell:nth-child(2),
+  .pair-cell:nth-child(4) { border-right: none; }
+  .pair-cell:nth-child(3),
+  .pair-cell:nth-child(4) { border-bottom: none; }
+  .pair-cell-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-ghost);
+    margin-bottom: 18px;
+  }
+  .display-sample {
+    font-family: 'Playfair Display', serif;
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .display-sample em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .body-sample {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 14.5px;
+    line-height: 1.9;
+    color: var(--ink-soft);
+    letter-spacing: 0.005em;
+  }
+  .mono-sample {
+    font-family: 'DM Mono', monospace;
+    font-size: 13.5px;
+    font-weight: 300;
+    line-height: 1.85;
+    color: var(--ink-muted);
+    letter-spacing: 0.03em;
+  }
+  .sans-sample {
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.78;
+    color: var(--ink-soft);
+  }
+
+  /* ── HIERARCHY ── */
+  .hierarchy-demo {
+    background: var(--cream);
+    padding: 44px 40px;
+    border-left: 3px solid var(--accent);
+  }
+  .h-h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 46px;
+    font-weight: 900;
+    line-height: 1.1;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+  .h-h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--ink-muted);
+    letter-spacing: 0;
+    margin-bottom: 20px;
+  }
+  .h-divider {
+    width: 44px;
+    height: 2px;
+    background: var(--accent);
+    margin-bottom: 20px;
+  }
+  .h-body {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 15px;
+    line-height: 1.88;
+    color: var(--ink-soft);
+    margin-bottom: 20px;
+  }
+  .h-caption {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--ink-ghost);
+  }
+
+  /* ── SCALE ── */
+  .scale-rows { display: flex; flex-direction: column; }
+  .scale-row {
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .scale-row:first-child { border-top: 1px solid var(--rule); }
+  .scale-size-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--ink-ghost);
+    width: 56px;
+    flex-shrink: 0;
+  }
+  .scale-text {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+
+  /* ── IMPACT STATEMENT ── */
+  .impact {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 60px 52px;
+    margin: 0 -40px;
+    margin-bottom: 72px;
+    position: relative;
+    overflow: hidden;
+  }
+  .impact::before {
+    content: '\201C';
+    font-family: 'Playfair Display', serif;
+    font-size: 320px;
+    font-weight: 900;
+    color: rgba(255,255,255,0.04);
+    position: absolute;
+    top: -80px;
+    left: 20px;
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+  .impact-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 5vw, 46px);
+    font-weight: 700;
+    font-style: italic;
+    line-height: 1.25;
+    color: var(--paper);
+    position: relative;
+    z-index: 1;
+    max-width: 660px;
+  }
+  .impact-quote span { color: var(--accent); font-style: normal; }
+  .impact-attr {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: rgba(255,255,255,0.38);
+    margin-top: 22px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── SPACING ── */
+  .spacing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+  }
+  .spacing-cell {
+    background: var(--paper);
+    padding: 28px 22px;
+  }
+  .sp-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-ghost);
+    margin-bottom: 14px;
+  }
+  .sp-text-tight {
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    line-height: 1.2;
+    color: var(--ink-soft);
+    letter-spacing: -0.02em;
+  }
+  .sp-text-normal {
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    letter-spacing: 0;
+  }
+  .sp-text-loose {
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    line-height: 2.15;
+    color: var(--ink-soft);
+    letter-spacing: 0.06em;
+  }
+
+  /* ── PSYCHOLOGICAL TYPES ── */
+  .psych-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .psych-card {
+    padding: 30px 26px;
+    border: 1px solid var(--rule);
+    position: relative;
+    overflow: hidden;
+  }
+  .psych-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 3px;
+  }
+  .psych-card.trust::before  { background: #2a4d7a; }
+  .psych-card.energy::before { background: var(--accent); }
+  .psych-card.calm::before   { background: #3a7a5a; }
+  .psych-card.luxury::before { background: var(--gold); }
+
+  .psych-word-trust {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 34px;
+    font-weight: 700;
+    color: #2a4d7a;
+    letter-spacing: -0.01em;
+    margin-bottom: 10px;
+  }
+  .psych-word-energy {
+    font-family: 'Outfit', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .psych-word-calm {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 400;
+    font-style: italic;
+    color: #3a7a5a;
+    letter-spacing: 0.01em;
+    margin-bottom: 10px;
+  }
+  .psych-word-luxury {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .psych-desc {
+    font-family: 'Outfit', sans-serif;
+    font-size: 12.5px;
+    font-weight: 300;
+    color: var(--ink-muted);
+    line-height: 1.65;
+  }
+  .psych-note {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    color: var(--ink-ghost);
+    margin-top: 12px;
+    letter-spacing: 0.08em;
+  }
+
+  /* ── ALIGNMENT ── */
+  .align-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+  }
+  .align-cell {
+    background: var(--paper);
+    padding: 26px 18px 22px;
+  }
+  .align-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-ghost);
+    margin-bottom: 14px;
+  }
+  .align-sample {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 12.5px;
+    line-height: 1.8;
+    color: var(--ink-soft);
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    border-top: 1px solid var(--rule);
+    padding-top: 26px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer-left {
+    font-family: 'Outfit', sans-serif;
+    font-size: 12px;
+    color: var(--ink-ghost);
+    font-weight: 300;
+  }
+  .footer-right {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-ghost);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    .page { padding: 36px 20px 72px; }
+    .pair-grid { grid-template-columns: 1fr; }
+    .pair-cell { border-right: none !important; }
+    .psych-grid { grid-template-columns: 1fr; }
+    .align-grid { grid-template-columns: 1fr 1fr; }
+    .spacing-grid { grid-template-columns: 1fr; }
+    .impact { margin: 0 -20px; padding: 40px 28px; }
+    .impact::before { font-size: 180px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">CodeAlpha &middot; Graphic Design Internship &middot; Sunny Lakhwani &middot; Task 03</div>
+    <div class="hero-title">The Art of<br><em>Typography</em></div>
+    <p class="hero-sub">A comprehensive study in font pairing, visual hierarchy, spacing rhythm, alignment, and the psychological weight of letterforms &mdash; designed by hand, felt through the eye.</p>
+    <div class="hero-meta">
+      <div class="hero-tag">Font Pairing</div>
+      <div class="hero-tag">Hierarchy</div>
+      <div class="hero-tag">Spacing</div>
+      <div class="hero-tag">Alignment</div>
+      <div class="hero-tag">Psychology</div>
+    </div>
+  </div>
+
+  <!-- 01 FONT PAIRING -->
+  <div class="section">
+    <div class="section-label">01 &mdash; Font Pairing</div>
+    <div class="pair-grid">
+      <div class="pair-cell">
+        <div class="pair-cell-label">Display &mdash; Playfair Display</div>
+        <div class="display-sample">Good design is<br><em>invisible.</em></div>
+      </div>
+      <div class="pair-cell">
+        <div class="pair-cell-label">Body &mdash; Libre Baskerville</div>
+        <div class="body-sample">Typography breathes life into content. The right serif carries the reader across the page with warmth, authority, and grace &mdash; never demanding attention, simply earning trust.</div>
+      </div>
+      <div class="pair-cell">
+        <div class="pair-cell-label">Label &mdash; DM Mono</div>
+        <div class="mono-sample">line-height: 1.88<br>tracking: +0.03em<br>weight: 300 light<br>use: captions, code, metadata</div>
+      </div>
+      <div class="pair-cell">
+        <div class="pair-cell-label">UI Sans &mdash; Outfit</div>
+        <div class="sans-sample">Clean, geometric, and approachable. Outfit brings modern clarity without feeling cold &mdash; ideal for UI labels, captions, navigation, and supporting text alongside a more expressive display face.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 HIERARCHY -->
+  <div class="section">
+    <div class="section-label">02 &mdash; Visual Hierarchy</div>
+    <div class="hierarchy-demo">
+      <div class="h-h1">The Silent Voice</div>
+      <div class="h-h2">On the invisible power of type</div>
+      <div class="h-divider"></div>
+      <p class="h-body">Hierarchy in typography is not about making things look important &mdash; it is about guiding the reader's eye through a deliberate path. Size creates entrance. Weight builds emphasis. Space gives breath. Colour signals meaning. Together, they form a silent grammar that operates beneath the threshold of conscious thought.</p>
+      <p class="h-body">Every font choice is a decision about tone. Every size adjustment shifts the balance of attention. The reader never notices good hierarchy &mdash; they simply follow it, effortlessly, as if there were no design at all.</p>
+      <div class="h-caption">Fig. 01 &mdash; Hierarchy: H1 900wt &middot; H2 400i &middot; Body 400 &middot; Caption Mono 300</div>
+    </div>
+  </div>
+
+  <!-- 03 TYPE SCALE -->
+  <div class="section">
+    <div class="section-label">03 &mdash; Type Scale Spectrum</div>
+    <div class="scale-rows">
+      <div class="scale-row">
+        <div class="scale-size-label">96px</div>
+        <div class="scale-text" style="font-size: 54px;">Aa</div>
+      </div>
+      <div class="scale-row">
+        <div class="scale-size-label">72px</div>
+        <div class="scale-text" style="font-size: 46px;">Form follows function</div>
+      </div>
+      <div class="scale-row">
+        <div class="scale-size-label">48px</div>
+        <div class="scale-text" style="font-size: 36px;">The space between letters</div>
+      </div>
+      <div class="scale-row">
+        <div class="scale-size-label">32px</div>
+        <div class="scale-text" style="font-size: 28px;">Typography is the voice of the page</div>
+      </div>
+      <div class="scale-row">
+        <div class="scale-size-label">24px</div>
+        <div class="scale-text" style="font-size: 21px; font-weight: 400;">Words carry weight long before they carry meaning.</div>
+      </div>
+      <div class="scale-row">
+        <div class="scale-size-label">18px</div>
+        <div class="scale-text" style="font-size: 16px; font-weight: 400;">Good typography sets written language so it is readable, legible, and quietly beautiful.</div>
+      </div>
+      <div class="scale-row">
+        <div class="scale-size-label">14px</div>
+        <div class="scale-text" style="font-size: 13.5px; font-weight: 400; font-family: 'Libre Baskerville', serif; color: var(--ink-soft);">At body size, the individual letter yields entirely to the word, the word to the sentence, and the sentence to the idea. Type becomes transparent.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IMPACT QUOTE -->
+  <div class="impact">
+    <div class="impact-quote">&ldquo;Type is a beautiful group of letters, not a group of <span>beautiful letters.</span>&rdquo;</div>
+    <div class="impact-attr">&mdash; Matthew Carter &middot; Type Designer</div>
+  </div>
+
+  <!-- 04 SPACING -->
+  <div class="section">
+    <div class="section-label">04 &mdash; Spacing &amp; Rhythm</div>
+    <div class="spacing-grid">
+      <div class="spacing-cell">
+        <div class="sp-label">Tight &mdash; line-height 1.2</div>
+        <div class="sp-text-tight">Design is not just what it looks like and feels like. Design is how it works and breathes within its space.</div>
+      </div>
+      <div class="spacing-cell">
+        <div class="sp-label">Comfortable &mdash; line-height 1.65</div>
+        <div class="sp-text-normal">Design is not just what it looks like and feels like. Design is how it works and breathes within its space.</div>
+      </div>
+      <div class="spacing-cell">
+        <div class="sp-label">Loose &mdash; line-height 2.15</div>
+        <div class="sp-text-loose">Design is not just what it looks like. Design is how it breathes.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 05 PSYCHOLOGICAL EFFECT -->
+  <div class="section">
+    <div class="section-label">05 &mdash; Psychological Effect of Type</div>
+    <div class="psych-grid">
+      <div class="psych-card trust">
+        <div class="psych-word-trust">Trust</div>
+        <p class="psych-desc">Serif fonts with consistent stroke contrast communicate reliability and institutional authority. Banks, legal firms, and newspapers have long relied on this psychological effect to anchor credibility.</p>
+        <div class="psych-note">Libre Baskerville &middot; 700 Bold &middot; &minus;0.01em tracking</div>
+      </div>
+      <div class="psych-card energy">
+        <div class="psych-word-energy">ENERGY</div>
+        <p class="psych-desc">Bold geometric sans-serifs with wide tracking and uppercase treatment signal momentum and urgency. Sports brands, tech startups, and call-to-action typography use this to create forward motion.</p>
+        <div class="psych-note">Outfit &middot; 700 Bold &middot; +0.06em tracking &middot; uppercase</div>
+      </div>
+      <div class="psych-card calm">
+        <div class="psych-word-calm">Calm</div>
+        <p class="psych-desc">Italic serifs at regular weight feel thoughtful, unhurried, and literary. They slow the reader down deliberately &mdash; a whisper rather than a shout. Used in wellness, poetry, and editorial contexts.</p>
+        <div class="psych-note">Playfair Display &middot; 400 Italic &middot; +0.01em tracking</div>
+      </div>
+      <div class="psych-card luxury">
+        <div class="psych-word-luxury">Luxury</div>
+        <p class="psych-desc">Spaced capitals in a refined serif with restrained gold tones create distance and exclusivity. Fashion houses and premium brands use generous letterspacing to imply scarcity and deliberateness.</p>
+        <div class="psych-note">Playfair Display &middot; 700 Bold &middot; +0.14em tracking &middot; uppercase</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 06 ALIGNMENT -->
+  <div class="section">
+    <div class="section-label">06 &mdash; Alignment Modes</div>
+    <div class="align-grid">
+      <div class="align-cell">
+        <div class="align-label">Left</div>
+        <div class="align-sample" style="text-align: left;">The eye enters at the left margin and finds comfort in consistency. The most natural choice for extended reading in Latin scripts.</div>
+      </div>
+      <div class="align-cell">
+        <div class="align-label">Center</div>
+        <div class="align-sample" style="text-align: center;">Formal, ceremonial, and balanced. Creates symmetry and calm authority. Best reserved for short headlines and invitations.</div>
+      </div>
+      <div class="align-cell">
+        <div class="align-label">Right</div>
+        <div class="align-sample" style="text-align: right;">Unusual and deliberate. Creates tension and draws the eye. Used in editorial captions, pull quotes, and art-directed layouts to break expectation.</div>
+      </div>
+      <div class="align-cell">
+        <div class="align-label">Justified</div>
+        <div class="align-sample" style="text-align: justify;">Clean and architectural &mdash; both edges locked to the margin. Requires careful word spacing to avoid rivers of white. A long tradition in newspapers and books.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-left">Typography Practice &mdash; Sunny Lakhwani &middot; Task 03</div>
+    <div class="footer-right">2025</div>
+  </div>
+
+</div>
+</body>
+</html>

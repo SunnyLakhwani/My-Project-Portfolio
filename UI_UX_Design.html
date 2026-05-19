@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task 2 – UI/UX Design</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f8f7f4;
+    --ink: #111110;
+    --mid: #6b6b68;
+    --border: #e5e3de;
+    --card: #ffffff;
+    --blue: #2563eb;
+    --blue-soft: #eff4ff;
+    --green: #059669;
+    --green-soft: #ecfdf5;
+    --amber: #d97706;
+    --amber-soft: #fffbeb;
+    --purple: #7c3aed;
+    --purple-soft: #f5f3ff;
+    --coral: #e63946;
+  }
+  body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; }
+
+  /* HEADER */
+  .page-header {
+    background: linear-gradient(135deg, #1e1b4b 0%, #2563eb 100%);
+    padding: 3.5rem 4rem;
+    color: #fff;
+    display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 2rem;
+  }
+  .page-header h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(2rem,5vw,3rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; }
+  .page-header h1 em { font-style: normal; color: #93c5fd; }
+  .page-header .desc { max-width: 340px; font-size: 0.9rem; color: #c7d2fe; line-height: 1.7; }
+  .pill-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 0.75rem; }
+  .pill { font-size: 0.7rem; font-weight: 500; padding: 4px 12px; border-radius: 100px; background: rgba(255,255,255,0.15); color: #e0e7ff; }
+
+  /* LAYOUT */
+  main { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem 6rem; }
+  section { margin-bottom: 4.5rem; }
+  .section-label {
+    font-size: 0.68rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--mid); margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.4rem; }
+  p.lead { color: var(--mid); font-size: 0.92rem; line-height: 1.7; max-width: 600px; }
+
+  /* USER FLOW */
+  .flow-strip {
+    display: flex; align-items: center; gap: 0; margin-top: 2rem;
+    overflow-x: auto; padding-bottom: 0.5rem;
+  }
+  .flow-node {
+    background: var(--card); border: 1.5px solid var(--border); border-radius: 12px;
+    padding: 1rem 1.25rem; text-align: center; min-width: 130px;
+    flex-shrink: 0;
+  }
+  .flow-node .icon { font-size: 1.4rem; margin-bottom: 6px; }
+  .flow-node .name { font-size: 0.75rem; font-weight: 600; }
+  .flow-node .desc { font-size: 0.65rem; color: var(--mid); margin-top: 2px; }
+  .flow-arrow { font-size: 1.2rem; color: var(--mid); flex-shrink: 0; padding: 0 6px; }
+  .flow-node.active { border-color: var(--blue); background: var(--blue-soft); }
+  .flow-node.active .name { color: var(--blue); }
+
+  /* WIREFRAMES */
+  .wireframe-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem; margin-top: 2rem;
+  }
+  .wf-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+  .wf-header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .wf-header .screen-name { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); }
+  .wf-header .badge { font-size: 0.6rem; padding: 2px 8px; border-radius: 100px; }
+  .wf-body { padding: 1rem 1.25rem; min-height: 360px; background: #fafaff; }
+  .wf-footer { padding: 0.75rem 1.25rem; border-top: 1px solid var(--border); }
+  .wf-footer p { font-size: 0.75rem; color: var(--mid); }
+
+  /* Wireframe blocks */
+  .wf-block { background: #e8e6fe; border-radius: 8px; margin-bottom: 8px; }
+  .wf-img-placeholder { background: #d4d0fb; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #7c3aed; font-size: 1.5rem; margin-bottom: 8px; }
+  .wf-text-line { background: #dde3ff; border-radius: 4px; height: 10px; margin-bottom: 6px; }
+  .wf-btn { background: #2563eb; border-radius: 8px; height: 36px; display: flex; align-items: center; justify-content: center; }
+  .wf-btn span { color: #fff; font-size: 0.7rem; font-weight: 600; }
+  .wf-input { background: #fff; border: 1.5px solid var(--border); border-radius: 8px; height: 36px; display: flex; align-items: center; padding: 0 10px; margin-bottom: 8px; }
+  .wf-input span { font-size: 0.7rem; color: #bbb; }
+  .wf-nav { display: flex; justify-content: space-around; background: #fff; border-radius: 12px; padding: 8px; margin-top: 8px; border: 1.5px solid var(--border); }
+  .wf-nav-icon { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .wf-nav-icon .dot { width: 20px; height: 20px; border-radius: 4px; background: #e8e6fe; }
+  .wf-nav-icon .dot.active { background: #2563eb; }
+  .wf-nav-icon span { font-size: 0.55rem; color: var(--mid); }
+  .wf-card-item { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 10px; margin-bottom: 8px; display: flex; gap: 10px; align-items: center; }
+  .wf-avatar { width: 36px; height: 36px; border-radius: 50%; background: #dde3ff; flex-shrink: 0; }
+  .wf-card-text { flex: 1; }
+  .wf-tag { display: inline-block; font-size: 0.6rem; font-weight: 600; padding: 2px 8px; border-radius: 100px; }
+  .wf-stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+  .wf-stat { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 10px; text-align: center; }
+  .wf-stat .val { font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; font-weight: 700; color: #2563eb; }
+  .wf-stat .lbl { font-size: 0.6rem; color: var(--mid); }
+  .wf-progress { height: 6px; background: #e8e6fe; border-radius: 3px; margin: 4px 0 8px; overflow: hidden; }
+  .wf-progress-bar { height: 100%; background: #2563eb; border-radius: 3px; }
+
+  /* MOCKUP SHOWCASE */
+  .mockup-showcase {
+    display: grid; grid-template-columns: 1fr 2fr; gap: 2rem;
+    margin-top: 2rem; align-items: start;
+  }
+  @media (max-width:700px) { .mockup-showcase { grid-template-columns: 1fr; } }
+  .phone-frame {
+    background: #1c1c1e; border-radius: 44px; padding: 12px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.25);
+    max-width: 260px; margin: 0 auto;
+  }
+  .phone-screen {
+    background: #fff; border-radius: 34px; overflow: hidden; min-height: 520px;
+    position: relative;
+  }
+  .phone-notch {
+    width: 80px; height: 22px; background: #1c1c1e;
+    border-radius: 0 0 14px 14px; margin: 0 auto;
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    z-index: 2;
+  }
+  .phone-content { padding: 32px 16px 16px; }
+  .app-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-top: 10px; }
+  .app-header .greeting { font-size: 0.65rem; color: var(--mid); }
+  .app-header .user-name { font-family: 'Space Grotesk',sans-serif; font-size: 0.85rem; font-weight: 700; color: var(--ink); }
+  .app-header .avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg,#6366f1,#8b5cf6); display: flex; align-items: center; justify-content: center; color:#fff; font-size:0.7rem; font-weight:600; }
+  .app-hero { background: linear-gradient(135deg, #2563eb, #7c3aed); border-radius: 16px; padding: 16px; color:#fff; margin-bottom: 14px; }
+  .app-hero .title { font-size: 0.65rem; opacity: 0.8; margin-bottom: 2px; }
+  .app-hero .balance { font-family: 'Space Grotesk',sans-serif; font-size: 1.5rem; font-weight: 700; }
+  .app-hero .sub { font-size: 0.6rem; opacity: 0.7; margin-top: 2px; }
+  .hero-actions { display: flex; gap: 8px; margin-top: 12px; }
+  .hero-action { background: rgba(255,255,255,0.2); border-radius: 8px; padding: 6px 12px; font-size: 0.6rem; color:#fff; text-align:center; flex:1; }
+  .section-title { font-weight: 600; font-size: 0.75rem; color: var(--ink); margin-bottom: 10px; }
+  .task-item { display:flex; align-items:center; gap:10px; background:#fafaff; border:1px solid var(--border); border-radius:10px; padding:10px; margin-bottom:8px; }
+  .task-icon { width:32px; height:32px; border-radius:8px; flex-shrink:0; display:flex;align-items:center;justify-content:center; font-size:0.9rem; }
+  .task-text { flex:1; }
+  .task-text .task-name { font-size:0.7rem; font-weight:600; color:var(--ink); }
+  .task-text .task-sub { font-size:0.6rem; color:var(--mid); }
+  .task-badge { font-size:0.55rem; font-weight:600; padding:2px 6px; border-radius:100px; }
+  .app-nav { display:flex; justify-content:space-around; border-top:1px solid var(--border); padding-top:12px; margin-top:12px; }
+  .nav-item { display:flex;flex-direction:column;align-items:center;gap:3px; }
+  .nav-item .ni { font-size:1rem; }
+  .nav-item .nl { font-size:0.5rem; color:var(--mid); }
+  .nav-item.active .nl { color:#2563eb; }
+
+  /* MOCKUP DETAILS */
+  .detail-panel { display: flex; flex-direction: column; gap: 1.5rem; }
+  .detail-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem;
+  }
+  .detail-card h4 { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:0.95rem; margin-bottom:0.5rem; }
+  .detail-card p { font-size:0.82rem; color:var(--mid); line-height:1.6; }
+  .feature-list { margin-top:0.75rem; display:flex;flex-direction:column;gap:6px; }
+  .feature-item { display:flex; align-items:flex-start; gap:8px; font-size:0.8rem; color:var(--mid); }
+  .feature-item .check { color:#059669; font-size:0.75rem; margin-top:2px; flex-shrink:0; }
+
+  /* COLOR SYSTEM */
+  .color-system-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1rem; margin-top:1.5rem; }
+  .cs-card { background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+  .cs-swatch { height:80px; }
+  .cs-info { padding:0.75rem; }
+  .cs-info .cs-name { font-size:0.78rem; font-weight:600; }
+  .cs-info .cs-role { font-size:0.68rem; color:var(--mid); }
+  .cs-info .cs-hex { font-size:0.7rem; color:var(--mid); font-family:monospace; margin-top:2px; }
+
+  /* INTERACTION TABLE */
+  .int-table { width:100%; border-collapse:collapse; margin-top:1.5rem; }
+  .int-table th,.int-table td { padding:0.7rem 1rem; font-size:0.82rem; text-align:left; border-bottom:1px solid var(--border); }
+  .int-table th { font-size:0.7rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--mid); background:var(--card); }
+  .state-chip { font-size:0.65rem; padding:2px 10px; border-radius:100px; font-weight:600; }
+
+  footer { background:#111110; color:#555; text-align:center; padding:1.5rem; font-size:0.75rem; letter-spacing:0.05em; }
+  footer span { color:#fff; }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div>
+    <h1>User Interface<br><em>Design</em></h1>
+    <div class="pill-row">
+      <span class="pill">Wireframes</span>
+      <span class="pill">Mockups</span>
+      <span class="pill">User Flow</span>
+      <span class="pill">Prototype Logic</span>
+    </div>
+  </div>
+  <div class="desc">
+    A complete UI/UX system for <strong style="color:#fff;">TaskFlow</strong> — a personal productivity and task management mobile app. Designed with intuitive navigation, clear visual hierarchy and modern interaction patterns.
+    <br><br>
+    <span style="font-size:0.75rem; opacity:0.7;">Task 02 · Sunny Lakhwani · 2026</span>
+  </div>
+</div>
+
+<main>
+
+  <!-- APP CONCEPT -->
+  <section>
+    <div class="section-label">Project Overview</div>
+    <h2>TaskFlow — Productivity App</h2>
+    <p class="lead">A mobile-first task management application designed for students and professionals. The UI focuses on reducing cognitive load through clear information hierarchy, meaningful use of color, and frictionless interactions.</p>
+  </section>
+
+  <!-- USER FLOW -->
+  <section>
+    <div class="section-label">Deliverable 01 — User Flow</div>
+    <h2>User Journey Map</h2>
+    <p class="lead">End-to-end user flow from first launch to core productivity loop. Each node represents a distinct screen state.</p>
+
+    <div class="flow-strip">
+      <div class="flow-node">
+        <div class="icon">📱</div>
+        <div class="name">Splash</div>
+        <div class="desc">App launch</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">👤</div>
+        <div class="name">Onboard</div>
+        <div class="desc">Sign up / Log in</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node active">
+        <div class="icon">🏠</div>
+        <div class="name">Dashboard</div>
+        <div class="desc">Overview &amp; stats</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">✅</div>
+        <div class="name">Task List</div>
+        <div class="desc">All tasks view</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">➕</div>
+        <div class="name">Create Task</div>
+        <div class="desc">Add / edit</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">📊</div>
+        <div class="name">Analytics</div>
+        <div class="desc">Progress reports</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="icon">⚙️</div>
+        <div class="name">Settings</div>
+        <div class="desc">Profile &amp; prefs</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WIREFRAMES -->
+  <section>
+    <div class="section-label">Deliverable 02 — Wireframes</div>
+    <h2>Low-Fidelity Wireframes</h2>
+    <p class="lead">Structural wireframes showing layout logic, content zones and navigation patterns without visual styling.</p>
+
+    <div class="wireframe-grid">
+
+      <!-- Onboarding Wireframe -->
+      <div class="wf-card">
+        <div class="wf-header">
+          <span class="screen-name">Onboarding</span>
+          <span class="badge" style="background:#eff4ff;color:#2563eb;">Screen 01</span>
+        </div>
+        <div class="wf-body">
+          <div class="wf-img-placeholder" style="height:110px;">🎯</div>
+          <div class="wf-text-line" style="width:60%; margin:0 auto 6px;"></div>
+          <div class="wf-text-line" style="width:80%; margin:0 auto 6px;"></div>
+          <div class="wf-text-line" style="width:50%; margin:0 auto 16px;"></div>
+          <div class="wf-input"><span>Email address</span></div>
+          <div class="wf-input"><span>Password</span></div>
+          <div class="wf-btn" style="margin-bottom:8px;"><span>Create Account →</span></div>
+          <div class="wf-text-line" style="width:50%; margin:0 auto;"></div>
+        </div>
+        <div class="wf-footer"><p>Auth screen with social login options</p></div>
+      </div>
+
+      <!-- Dashboard Wireframe -->
+      <div class="wf-card">
+        <div class="wf-header">
+          <span class="screen-name">Dashboard</span>
+          <span class="badge" style="background:#ecfdf5;color:#059669;">Screen 02</span>
+        </div>
+        <div class="wf-body">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <div>
+              <div class="wf-text-line" style="width:70px; height:8px;"></div>
+              <div class="wf-text-line" style="width:100px; height:12px; margin-top:4px;"></div>
+            </div>
+            <div class="wf-avatar"></div>
+          </div>
+          <div class="wf-block" style="height:80px; padding:12px; display:flex;flex-direction:column;justify-content:space-between; background:#dde3ff;">
+            <div class="wf-text-line" style="width:60%; background:#b4c0f8;"></div>
+            <div class="wf-text-line" style="width:40%; height:18px; background:#b4c0f8;"></div>
+          </div>
+          <div style="margin-top:8px;">
+            <div class="wf-stat-row">
+              <div class="wf-stat"><div class="val">12</div><div class="lbl">Active</div></div>
+              <div class="wf-stat"><div class="val">5</div><div class="lbl">Done today</div></div>
+            </div>
+          </div>
+          <div class="wf-text-line" style="width:90px; height:10px; margin-bottom:8px;"></div>
+          <div class="wf-card-item">
+            <div class="wf-avatar" style="border-radius:8px;"></div>
+            <div class="wf-card-text">
+              <div class="wf-text-line" style="width:80%; height:9px;"></div>
+              <div class="wf-text-line" style="width:50%; margin-top:4px;"></div>
+            </div>
+          </div>
+          <div class="wf-card-item">
+            <div class="wf-avatar" style="border-radius:8px;"></div>
+            <div class="wf-card-text">
+              <div class="wf-text-line" style="width:65%; height:9px;"></div>
+              <div class="wf-text-line" style="width:40%; margin-top:4px;"></div>
+            </div>
+          </div>
+          <div class="wf-nav">
+            <div class="wf-nav-icon"><div class="dot active"></div><span>Home</span></div>
+            <div class="wf-nav-icon"><div class="dot"></div><span>Tasks</span></div>
+            <div class="wf-nav-icon"><div class="dot"></div><span>Stats</span></div>
+            <div class="wf-nav-icon"><div class="dot"></div><span>Profile</span></div>
+          </div>
+        </div>
+        <div class="wf-footer"><p>Main dashboard with hero card &amp; task list</p></div>
+      </div>
+
+      <!-- Create Task Wireframe -->
+      <div class="wf-card">
+        <div class="wf-header">
+          <span class="screen-name">Create Task</span>
+          <span class="badge" style="background:#fffbeb;color:#d97706;">Screen 03</span>
+        </div>
+        <div class="wf-body">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+            <div class="wf-text-line" style="width:60px; height:10px;"></div>
+            <div class="wf-text-line" style="width:40px; height:10px; background:#dde3ff;"></div>
+          </div>
+          <div class="wf-text-line" style="width:80px; height:8px; margin-bottom:4px;"></div>
+          <div class="wf-input" style="height:44px;"><span>Task title...</span></div>
+          <div class="wf-text-line" style="width:80px; height:8px; margin-bottom:4px; margin-top:8px;"></div>
+          <div class="wf-input" style="height:80px; align-items:flex-start; padding-top:10px;"><span>Description...</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+            <div>
+              <div class="wf-text-line" style="width:60px; height:8px; margin-bottom:4px;"></div>
+              <div class="wf-input"><span>Due date</span></div>
+            </div>
+            <div>
+              <div class="wf-text-line" style="width:60px; height:8px; margin-bottom:4px;"></div>
+              <div class="wf-input"><span>Priority</span></div>
+            </div>
+          </div>
+          <div class="wf-text-line" style="width:80px; height:8px; margin-bottom:4px; margin-top:8px;"></div>
+          <div style="display:flex; gap:6px; margin-bottom:16px;">
+            <div style="background:#dde3ff; border-radius:100px; height:28px; width:70px; border-radius:6px;"></div>
+            <div style="background:#d4d0fb; border-radius:100px; height:28px; width:60px; border-radius:6px;"></div>
+            <div style="background:#e8e6fe; border-radius:100px; height:28px; width:50px; border-radius:6px;"></div>
+          </div>
+          <div class="wf-btn"><span>Save Task</span></div>
+        </div>
+        <div class="wf-footer"><p>Task creation form with fields &amp; categories</p></div>
+      </div>
+
+      <!-- Analytics Wireframe -->
+      <div class="wf-card">
+        <div class="wf-header">
+          <span class="screen-name">Analytics</span>
+          <span class="badge" style="background:#f5f3ff;color:#7c3aed;">Screen 04</span>
+        </div>
+        <div class="wf-body">
+          <div class="wf-text-line" style="width:100px; height:12px; margin-bottom:14px;"></div>
+          <div class="wf-stat-row" style="margin-bottom:10px;">
+            <div class="wf-stat"><div class="val">78%</div><div class="lbl">Completion</div></div>
+            <div class="wf-stat"><div class="val" style="color:#d97706;">4.2</div><div class="lbl">Avg/day</div></div>
+          </div>
+          <!-- Bar Chart Sketch -->
+          <div class="wf-text-line" style="width:70px; height:9px; margin-bottom:8px;"></div>
+          <div style="display:flex; align-items:flex-end; gap:6px; height:80px; margin-bottom:12px;">
+            <div style="background:#dde3ff; border-radius:4px 4px 0 0; flex:1; height:40%;"></div>
+            <div style="background:#dde3ff; border-radius:4px 4px 0 0; flex:1; height:65%;"></div>
+            <div style="background:#b4c0f8; border-radius:4px 4px 0 0; flex:1; height:90%;"></div>
+            <div style="background:#dde3ff; border-radius:4px 4px 0 0; flex:1; height:50%;"></div>
+            <div style="background:#dde3ff; border-radius:4px 4px 0 0; flex:1; height:75%;"></div>
+            <div style="background:#dde3ff; border-radius:4px 4px 0 0; flex:1; height:55%;"></div>
+            <div style="background:#dde3ff; border-radius:4px 4px 0 0; flex:1; height:80%;"></div>
+          </div>
+          <div class="wf-text-line" style="width:100px; height:9px; margin-bottom:8px;"></div>
+          <div class="wf-progress"><div class="wf-progress-bar" style="width:78%;"></div></div>
+          <div class="wf-progress"><div class="wf-progress-bar" style="width:55%; background:#7c3aed;"></div></div>
+          <div class="wf-progress"><div class="wf-progress-bar" style="width:90%; background:#059669;"></div></div>
+          <div class="wf-nav" style="margin-top:12px;">
+            <div class="wf-nav-icon"><div class="dot"></div><span>Home</span></div>
+            <div class="wf-nav-icon"><div class="dot"></div><span>Tasks</span></div>
+            <div class="wf-nav-icon"><div class="dot active"></div><span>Stats</span></div>
+            <div class="wf-nav-icon"><div class="dot"></div><span>Profile</span></div>
+          </div>
+        </div>
+        <div class="wf-footer"><p>Productivity analytics with charts &amp; progress</p></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- HIGH FIDELITY MOCKUP -->
+  <section>
+    <div class="section-label">Deliverable 03 — High-Fidelity Mockup</div>
+    <h2>Dashboard Screen — Full Mockup</h2>
+    <p class="lead">A pixel-level representation of the final dashboard screen showing real typography, color and spacing.</p>
+
+    <div class="mockup-showcase">
+      <!-- Phone Mockup -->
+      <div>
+        <div class="phone-frame">
+          <div class="phone-screen">
+            <div class="phone-notch"></div>
+            <div class="phone-content">
+              <!-- App Header -->
+              <div class="app-header">
+                <div>
+                  <div class="greeting">Good morning 👋</div>
+                  <div class="user-name">Alex Johnson</div>
+                </div>
+                <div class="avatar">AJ</div>
+              </div>
+
+              <!-- Hero Card -->
+              <div class="app-hero">
+                <div class="title">Today's Progress</div>
+                <div class="balance">5 / 12</div>
+                <div class="sub">tasks completed · keep going!</div>
+                <div class="hero-actions">
+                  <div class="hero-action">+ Add Task</div>
+                  <div class="hero-action">📊 Stats</div>
+                </div>
+              </div>
+
+              <!-- Task Items -->
+              <div class="section-title">Recent Tasks</div>
+
+              <div class="task-item">
+                <div class="task-icon" style="background:#eff4ff;">📘</div>
+                <div class="task-text">
+                  <div class="task-name">Design wireframes</div>
+                  <div class="task-sub">Due today · 3 hrs left</div>
+                </div>
+                <span class="task-badge" style="background:#eff4ff;color:#2563eb;">High</span>
+              </div>
+
+              <div class="task-item">
+                <div class="task-icon" style="background:#ecfdf5;">✅</div>
+                <div class="task-text">
+                  <div class="task-name" style="text-decoration:line-through;color:#aaa;">Submit report</div>
+                  <div class="task-sub">Completed at 9:42am</div>
+                </div>
+                <span class="task-badge" style="background:#ecfdf5;color:#059669;">Done</span>
+              </div>
+
+              <div class="task-item">
+                <div class="task-icon" style="background:#fffbeb;">⚡</div>
+                <div class="task-text">
+                  <div class="task-name">Team standup call</div>
+                  <div class="task-sub">Due tomorrow · 10:00 AM</div>
+                </div>
+                <span class="task-badge" style="background:#fffbeb;color:#d97706;">Med</span>
+              </div>
+
+              <!-- Bottom Nav -->
+              <div class="app-nav">
+                <div class="nav-item active">
+                  <div class="ni">🏠</div>
+                  <div class="nl" style="color:#2563eb;">Home</div>
+                </div>
+                <div class="nav-item">
+                  <div class="ni">✅</div>
+                  <div class="nl">Tasks</div>
+                </div>
+                <div class="nav-item">
+                  <div class="ni">📊</div>
+                  <div class="nl">Stats</div>
+                </div>
+                <div class="nav-item">
+                  <div class="ni">👤</div>
+                  <div class="nl">Profile</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detail Annotations -->
+      <div class="detail-panel">
+        <div class="detail-card">
+          <h4>Design Decisions</h4>
+          <div class="feature-list">
+            <div class="feature-item"><span class="check">✓</span>Hero card uses a gradient to draw attention to the most critical metric (progress)</div>
+            <div class="feature-item"><span class="check">✓</span>Color-coded priority badges (blue=high, amber=medium, green=done) allow instant scanning</div>
+            <div class="feature-item"><span class="check">✓</span>Bottom navigation kept to 4 items — respects thumb zone ergonomics on mobile</div>
+            <div class="feature-item"><span class="check">✓</span>Completed tasks use strikethrough + muted color for clear visual state differentiation</div>
+            <div class="feature-item"><span class="check">✓</span>Avatar initials in the header provide user identity without loading delays</div>
+          </div>
+        </div>
+
+        <div class="detail-card">
+          <h4>Interaction States</h4>
+          <table class="int-table">
+            <thead><tr><th>Element</th><th>State</th><th>Behavior</th></tr></thead>
+            <tbody>
+              <tr><td>Task item</td><td><span class="state-chip" style="background:#eff4ff;color:#2563eb;">Tap</span></td><td>Opens task detail sheet</td></tr>
+              <tr><td>Task item</td><td><span class="state-chip" style="background:#ecfdf5;color:#059669;">Swipe right</span></td><td>Mark as complete</td></tr>
+              <tr><td>Task item</td><td><span class="state-chip" style="background:#fef2f2;color:#dc2626;">Swipe left</span></td><td>Delete with confirm</td></tr>
+              <tr><td>+ Add Task</td><td><span class="state-chip" style="background:#fffbeb;color:#d97706;">Tap</span></td><td>Slide-up create sheet</td></tr>
+              <tr><td>Nav icon</td><td><span class="state-chip" style="background:#f5f3ff;color:#7c3aed;">Active</span></td><td>Blue tint + scale 1.1</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="detail-card">
+          <h4>Spacing &amp; Layout System</h4>
+          <p>Grid: 8px base unit. Padding: 16px screen edges. Card corner radius: 16px. Typography scale: 12 → 14 → 16 → 20 → 24px. Navigation height: 64px (safe area aware).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COLOR SYSTEM -->
+  <section>
+    <div class="section-label">Deliverable 04 — Color System</div>
+    <h2>UI Color Palette</h2>
+    <p class="lead">Semantic colors used consistently across all states and components.</p>
+    <div class="color-system-grid">
+      <div class="cs-card"><div class="cs-swatch" style="background:linear-gradient(135deg,#1e1b4b,#2563eb);"></div><div class="cs-info"><div class="cs-name">Primary Gradient</div><div class="cs-role">Hero cards, brand moments</div><div class="cs-hex">#1E1B4B → #2563EB</div></div></div>
+      <div class="cs-card"><div class="cs-swatch" style="background:#2563eb;"></div><div class="cs-info"><div class="cs-name">Primary Blue</div><div class="cs-role">CTAs, active states, high priority</div><div class="cs-hex">#2563EB</div></div></div>
+      <div class="cs-card"><div class="cs-swatch" style="background:#059669;"></div><div class="cs-info"><div class="cs-name">Success Green</div><div class="cs-role">Completed tasks, positive states</div><div class="cs-hex">#059669</div></div></div>
+      <div class="cs-card"><div class="cs-swatch" style="background:#d97706;"></div><div class="cs-info"><div class="cs-name">Warning Amber</div><div class="cs-role">Medium priority, due soon</div><div class="cs-hex">#D97706</div></div></div>
+      <div class="cs-card"><div class="cs-swatch" style="background:#e63946;"></div><div class="cs-info"><div class="cs-name">Danger Red</div><div class="cs-role">Overdue, destructive actions</div><div class="cs-hex">#E63946</div></div></div>
+      <div class="cs-card"><div class="cs-swatch" style="background:#f8f7f4;border-bottom:1px solid #e5e3de;"></div><div class="cs-info"><div class="cs-name">Background</div><div class="cs-role">Page bg, off-white surface</div><div class="cs-hex">#F8F7F4</div></div></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Task 02 — UI/UX Design &nbsp;·&nbsp; <span>Made By Sunny Lakhwani</span>
+</footer>
+
+</body>
+</html>
