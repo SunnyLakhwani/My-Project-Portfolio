@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task 1 Logo Redesign</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #0f0f0f;
+    --paper: #f5f2ec;
+    --accent: #1a3aff;
+    --accent2: #ff3a1a;
+    --mid: #5a5a5a;
+    --card: #ffffff;
+    --border: #e0dcd4;
+  }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+  /* ---- HEADER ---- */
+  header {
+    background: var(--ink);
+    color: #fff;
+    padding: 3rem 4rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+  header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  header h1 span { color: var(--accent); }
+  header .meta {
+    text-align: right;
+    font-size: 0.8rem;
+    color: #888;
+    line-height: 1.8;
+  }
+  header .meta strong { color: #fff; display: block; font-size: 1rem; }
+  /* ---- MAIN ---- */
+  main { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem 6rem; }
+  section { margin-bottom: 4rem; }
+  .section-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+  p { color: var(--mid); line-height: 1.7; font-size: 0.95rem; }
+  /* ---- LOGO GRID ---- */
+  .logo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  .logo-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .logo-canvas {
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    position: relative;
+  }
+  .logo-info {
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .logo-info h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+  .logo-info p { font-size: 0.8rem; }
+  .badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 100px;
+    margin-bottom: 0.5rem;
+  }
+  /* ---- LOGO 1: Primary ---- */
+  .logo-1-bg { background: #0f0f0f; }
+  .logo-primary {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .logo-mark {
+    width: 54px;
+    height: 54px;
+    position: relative;
+  }
+  .logo-mark svg { width: 100%; height: 100%; }
+  .logo-wordmark {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+  }
+  .logo-wordmark .top {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.03em;
+  }
+  .logo-wordmark .top .highlight { color: #1a3aff; }
+  .logo-wordmark .sub {
+    font-size: 0.55rem;
+    font-weight: 400;
+    color: #777;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+  /* ---- LOGO 2: Light Minimal ---- */
+  .logo-2-bg { background: #f0efea; }
+  .logo-minimal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-minimal .mark-ring {
+    width: 60px; height: 60px;
+    border: 3px solid #0f0f0f;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .logo-minimal .mark-ring::before {
+    content: '';
+    position: absolute;
+    width: 10px; height: 10px;
+    background: #1a3aff;
+    border-radius: 50%;
+    top: -2px; right: 8px;
+  }
+  .logo-minimal .mark-inner {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #0f0f0f;
+    letter-spacing: -0.05em;
+  }
+  .logo-minimal .name {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #0f0f0f;
+    letter-spacing: -0.02em;
+  }
+  /* ---- LOGO 3: Icon-only ---- */
+  .logo-3-bg { background: #1a3aff; }
+  .icon-only {
+    width: 80px; height: 80px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 20px;
+    display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  /* ---- COLOR SECTION ---- */
+  .color-row {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .color-chip {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    min-width: 100px;
+  }
+  .chip-swatch {
+    height: 64px;
+    border-radius: 10px;
+    border: 1px solid rgba(0,0,0,0.08);
+  }
+  .chip-label { font-size: 0.7rem; color: var(--mid); }
+  .chip-hex { font-size: 0.75rem; font-weight: 500; color: var(--ink); font-family: monospace; }
+  /* ---- TYPOGRAPHY SECTION ---- */
+  .type-row { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1.5rem; }
+  .type-specimen {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .type-meta { min-width: 120px; }
+  .type-meta .role { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--mid); }
+  .type-meta .name { font-weight: 500; font-size: 0.85rem; color: var(--ink); margin-top: 4px; }
+  .type-meta .use { font-size: 0.75rem; color: var(--mid); margin-top: 2px; }
+  .type-display { flex: 1; }
+  .type-display .large-text { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; line-height: 1.1; color: var(--ink); letter-spacing: -0.03em; }
+  .type-display .mid-text { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; color: var(--ink); margin-top: 8px; }
+  .type-display .body-text { font-family: 'DM Sans', sans-serif; font-size: 0.9rem; line-height: 1.7; color: var(--mid); margin-top: 8px; max-width: 380px; }
+  /* ---- RATIONALE ---- */
+  .rationale-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .rationale-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+  }
+  .rationale-item .icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .rationale-item h4 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; }
+  .rationale-item p { font-size: 0.8rem; }
+  /* ---- VARIATIONS ---- */
+  .variation-strip {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .var-tile {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 180px;
+  }
+  .var-label { font-size: 0.75rem; color: var(--mid); margin-top: 4px; }
+  .usage-table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; }
+  .usage-table th, .usage-table td { text-align: left; padding: 0.75rem 1rem; font-size: 0.85rem; border-bottom: 1px solid var(--border); }
+  .usage-table th { font-weight: 500; color: var(--mid); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; background: var(--card); }
+  .usage-table tr:last-child td { border-bottom: none; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  footer { background: var(--ink); color: #555; text-align: center; padding: 1.5rem; font-size: 0.75rem; letter-spacing: 0.05em; }
+  footer span { color: #fff; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Logo<br><span>Redesign</span></h1>
+  </div>
+  <div class="meta">
+    <strong>Task 01 — Sunny Lakhwani</strong>
+    Brand Identity & Visual Design<br>
+    Graphic Design Program · 2025
+  </div>
+</header>
+
+<main>
+
+  <!-- OBJECTIVE -->
+  <section>
+    <div class="section-label">Project Brief</div>
+    <h2>Objective</h2>
+    <p>Redesign the CodeAlpha logo to give it a fresh, modern look — maintaining brand identity while enhancing visual appeal through contemporary design trends. Three distinct variations are presented below, each with a unique visual logic.</p>
+  </section>
+
+  <!-- LOGO VARIATIONS -->
+  <section>
+    <div class="section-label">Deliverable 01</div>
+    <h2>Logo Variations</h2>
+
+    <div class="logo-grid">
+
+      <!-- VARIATION 1: Dark Primary -->
+      <div class="logo-card">
+        <div class="logo-canvas logo-1-bg">
+          <div class="logo-primary">
+            <!-- Custom SVG Mark -->
+            <div class="logo-mark">
+              <svg viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="54" height="54" rx="12" fill="#1a3aff"/>
+                <!-- Code brackets stylized as "CA" letterform -->
+                <path d="M14 18 L8 27 L14 36" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M40 18 L46 27 L40 36" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="27" cy="27" r="4" fill="#ff3a1a"/>
+              </svg>
+            </div>
+            <div class="logo-wordmark">
+              <div class="top">Code<span class="highlight">Alpha</span></div>
+              <div class="sub">Software Development</div>
+            </div>
+          </div>
+        </div>
+        <div class="logo-info">
+          <div class="badge" style="background:#eef2ff; color:#1a3aff;">Primary / Dark</div>
+          <h3>Horizontal Lockup</h3>
+          <p>Main logo for dark backgrounds, digital platforms and the website header. Bold Syne typeface with code-bracket icon reinforcing the tech identity.</p>
+        </div>
+      </div>
+
+      <!-- VARIATION 2: Light Minimal -->
+      <div class="logo-card">
+        <div class="logo-canvas logo-2-bg">
+          <div class="logo-minimal">
+            <div class="mark-ring">
+              <div class="mark-inner">CA</div>
+            </div>
+            <div class="name">CodeAlpha</div>
+          </div>
+        </div>
+        <div class="logo-info">
+          <div class="badge" style="background:#f5f2ec; color:#5a5a5a;">Secondary / Light</div>
+          <h3>Minimal Stacked</h3>
+          <p>For letterheads, light-background documents and print materials. The ring motif conveys precision and a global outlook.</p>
+        </div>
+      </div>
+
+      <!-- VARIATION 3: Icon Only -->
+      <div class="logo-card">
+        <div class="logo-canvas logo-3-bg">
+          <div class="icon-only">
+            <svg width="48" height="48" viewBox="0 0 54 54" fill="none">
+              <path d="M14 18 L8 27 L14 36" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M40 18 L46 27 L40 36" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="27" cy="27" r="5" fill="#ff3a1a"/>
+            </svg>
+          </div>
+        </div>
+        <div class="logo-info">
+          <div class="badge" style="background:#eef2ff; color:#1a3aff;">Icon-Only</div>
+          <h3>App Icon / Favicon</h3>
+          <p>Standalone mark for app icons, favicons, social media profile images and embroidery where the wordmark isn't practical.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COLOR PALETTE -->
+  <section>
+    <div class="section-label">Deliverable 02</div>
+    <h2>Brand Color Palette</h2>
+    <p>A confident, tech-forward palette built on deep ink and electric blue, punctuated by a warm red accent that signals energy and precision.</p>
+
+    <div class="color-row">
+      <div class="color-chip">
+        <div class="chip-swatch" style="background:#1a3aff;"></div>
+        <div class="chip-label">Primary Blue</div>
+        <div class="chip-hex">#1A3AFF</div>
+      </div>
+      <div class="color-chip">
+        <div class="chip-swatch" style="background:#0f0f0f;"></div>
+        <div class="chip-label">Ink Black</div>
+        <div class="chip-hex">#0F0F0F</div>
+      </div>
+      <div class="color-chip">
+        <div class="chip-swatch" style="background:#ff3a1a;"></div>
+        <div class="chip-label">Accent Red</div>
+        <div class="chip-hex">#FF3A1A</div>
+      </div>
+      <div class="color-chip">
+        <div class="chip-swatch" style="background:#f5f2ec; border:1px solid #e0dcd4;"></div>
+        <div class="chip-label">Paper White</div>
+        <div class="chip-hex">#F5F2EC</div>
+      </div>
+      <div class="color-chip">
+        <div class="chip-swatch" style="background:#5a5a5a;"></div>
+        <div class="chip-label">Slate Gray</div>
+        <div class="chip-hex">#5A5A5A</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TYPOGRAPHY -->
+  <section>
+    <div class="section-label">Deliverable 03</div>
+    <h2>Typography System</h2>
+    <p>Two typefaces chosen for contrast and clarity — a bold geometric display font for brand presence, paired with a clean humanist sans for readability.</p>
+
+    <div class="type-row">
+      <div class="type-specimen">
+        <div class="type-meta">
+          <div class="role">Display Font</div>
+          <div class="name">Syne</div>
+          <div class="use">Headlines, Logo, UI Titles</div>
+        </div>
+        <div class="type-display">
+          <div class="large-text">CodeAlpha</div>
+          <div class="mid-text">Building tomorrow, today.</div>
+        </div>
+      </div>
+      <div class="type-specimen">
+        <div class="type-meta">
+          <div class="role">Body Font</div>
+          <div class="name">DM Sans</div>
+          <div class="use">Body copy, UI, Documents</div>
+        </div>
+        <div class="type-display">
+          <div class="body-text">CodeAlpha is a leading software development company. We create meaningful digital products and services that empower people and businesses around the world.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- USAGE GUIDE -->
+  <section>
+    <div class="section-label">Deliverable 04</div>
+    <h2>Logo Usage Guide</h2>
+    <table class="usage-table">
+      <thead>
+        <tr>
+          <th>Context</th>
+          <th>Variation</th>
+          <th>Background</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Website Header</td><td>Horizontal Lockup (Dark)</td><td>Dark / Black</td><td><span class="dot" style="background:#22c55e; margin-right:6px;"></span>Approved</td></tr>
+        <tr><td>Business Card</td><td>Minimal Stacked (Light)</td><td>White / Paper</td><td><span class="dot" style="background:#22c55e; margin-right:6px;"></span>Approved</td></tr>
+        <tr><td>App Icon / Favicon</td><td>Icon-Only</td><td>Blue (#1A3AFF)</td><td><span class="dot" style="background:#22c55e; margin-right:6px;"></span>Approved</td></tr>
+        <tr><td>Social Media (Profile)</td><td>Icon-Only</td><td>Dark / Blue</td><td><span class="dot" style="background:#22c55e; margin-right:6px;"></span>Approved</td></tr>
+        <tr><td>Merchandise / Embroidery</td><td>Icon-Only</td><td>Any solid color</td><td><span class="dot" style="background:#f59e0b; margin-right:6px;"></span>Check contrast</td></tr>
+        <tr><td>Against patterned BG</td><td>Any</td><td>Busy texture</td><td><span class="dot" style="background:#ef4444; margin-right:6px;"></span>Avoid</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- DESIGN LOGIC -->
+  <section>
+    <div class="section-label">Deliverable 05</div>
+    <h2>Design Logic &amp; Rationale</h2>
+    <div class="rationale-grid">
+      <div class="rationale-item">
+        <div class="icon">{ }</div>
+        <h4>Code Bracket Icon</h4>
+        <p>The custom mark uses angular code brackets — universal symbols of programming — with a circular accent node representing the "Alpha" pivot point. It reads instantly as a tech company.</p>
+      </div>
+      <div class="rationale-item">
+        <div class="icon">Aa</div>
+        <h4>Syne Typeface</h4>
+        <p>Syne's geometric structure and ultra-bold weight gives the wordmark authority and memorability. Its slight quirk at high weights avoids feeling corporate or generic.</p>
+      </div>
+      <div class="rationale-item">
+        <div class="icon" style="color:#1a3aff;">■</div>
+        <h4>Electric Blue</h4>
+        <p>Chosen for its association with intelligence, trust, and digital precision. It pops on both dark and light backgrounds without relying on gradients or effects.</p>
+      </div>
+      <div class="rationale-item">
+        <div class="icon" style="color:#ff3a1a;">●</div>
+        <h4>Red Accent</h4>
+        <p>The small red node within the mark adds energy and tension. It differentiates CodeAlpha from competitors who rely on monochromatic palettes.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Task 01 — Logo Redesign &nbsp;·&nbsp; <span>Made by Sunny Lakhwani</span>
+</footer>
+
+</body>
+</html>
