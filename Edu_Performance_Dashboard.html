@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Educational Performance Dashboard — CodeAlpha</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --bg: #f7f5f0;
+    --bg2: #efece4;
+    --bg3: #e6e2d6;
+    --text: #1c1a15;
+    --text2: #5a5446;
+    --text3: #9a9284;
+    --accent: #2e6b4f;
+    --accent2: #d4823a;
+    --accent3: #4a7fc1;
+    --accent4: #9b4db8;
+    --red: #c0392b;
+    --border: rgba(28,26,21,0.1);
+    --card: #ffffff;
+    --shadow: 0 1px 4px rgba(28,26,21,0.07), 0 4px 16px rgba(28,26,21,0.04);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 32px;
+    background: var(--accent);
+    color: #fff;
+  }
+  .topbar-left { display: flex; flex-direction: column; gap: 2px; }
+  .topbar-brand { font-size: 11px; font-weight: 500; opacity: 0.6; text-transform: uppercase; letter-spacing: 0.1em; }
+  .topbar-title { font-family: 'Lora', serif; font-size: 20px; font-weight: 600; }
+  .topbar-right { display: flex; align-items: center; gap: 12px; }
+  .top-badge { font-size: 11px; padding: 4px 12px; border-radius: 20px; background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); }
+  .top-badge.year { background: rgba(255,255,255,0.25); font-weight: 600; }
+
+  .main { padding: 28px 32px; max-width: 1600px; margin: 0 auto; }
+
+  .section-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text3); margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+  }
+  .section-label::after { content:''; flex:1; height:1px; background: var(--border); }
+
+  .kpi-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 26px; }
+  .kpi-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 18px 20px;
+    box-shadow: var(--shadow);
+    border-top: 3px solid var(--kpi-color, var(--accent));
+    transition: transform 0.18s;
+  }
+  .kpi-card:hover { transform: translateY(-2px); }
+  .kpi-label { font-size: 10px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+  .kpi-value { font-size: 28px; font-weight: 600; color: var(--text); line-height: 1; margin-bottom: 6px; font-family: 'Lora', serif; }
+  .kpi-delta { font-size: 12px; font-weight: 500; }
+  .kpi-delta.up { color: var(--accent); }
+  .kpi-delta.down { color: var(--red); }
+  .kpi-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+  .card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 22px 24px;
+    box-shadow: var(--shadow);
+  }
+  .card-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .card-sub { font-size: 11px; color: var(--text3); margin-bottom: 16px; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 24px; }
+  .grid-3 { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 18px; margin-bottom: 24px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 24px; }
+  .chart-wrap { position: relative; width: 100%; }
+
+  /* Subject perf bars */
+  .subj-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
+  .subj-name { font-size: 12px; color: var(--text2); width: 110px; flex-shrink: 0; }
+  .subj-track { flex: 1; background: var(--bg2); border-radius: 4px; height: 10px; overflow: hidden; }
+  .subj-fill { height: 100%; border-radius: 4px; }
+  .subj-val { font-size: 12px; color: var(--text); width: 36px; flex-shrink: 0; font-weight: 600; text-align: right; }
+  .subj-grade { font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 600; flex-shrink: 0; }
+
+  /* Resource table */
+  .res-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .res-table th { color: var(--text3); font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; padding: 7px 10px; border-bottom: 1px solid var(--border); text-align: left; }
+  .res-table td { padding: 9px 10px; border-bottom: 1px solid rgba(28,26,21,0.05); color: var(--text2); }
+  .res-table tr:last-child td { border-bottom: none; }
+  .res-table tr:hover td { background: var(--bg); }
+  .util-bar { display: flex; align-items: center; gap: 8px; }
+  .util-track { flex: 1; height: 6px; background: var(--bg2); border-radius: 3px; overflow: hidden; }
+  .util-fill { height: 100%; border-radius: 3px; }
+  .gap-pill { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; }
+  .gap-critical { background: rgba(192,57,43,0.1); color: var(--red); border: 1px solid rgba(192,57,43,0.2); }
+  .gap-moderate { background: rgba(212,130,58,0.1); color: var(--accent2); border: 1px solid rgba(212,130,58,0.25); }
+  .gap-sufficient { background: rgba(46,107,79,0.1); color: var(--accent); border: 1px solid rgba(46,107,79,0.2); }
+
+  /* Grade distribution */
+  .grade-circle { display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; font-weight: 700; font-size: 14px; }
+
+  /* Attendance heatmap */
+  .heat-grid { display: grid; grid-template-columns: repeat(13, 1fr); gap: 3px; }
+  .heat-cell { height: 18px; border-radius: 3px; }
+
+  /* Insight box */
+  .insight { display: flex; gap: 12px; padding: 12px 14px; border-radius: 10px; margin-bottom: 10px; border-left: 3px solid; }
+  .insight.info { background: rgba(74,127,193,0.07); border-color: var(--accent3); }
+  .insight.warn { background: rgba(212,130,58,0.07); border-color: var(--accent2); }
+  .insight.success { background: rgba(46,107,79,0.07); border-color: var(--accent); }
+  .insight-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .insight-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+  .insight-text strong { color: var(--text); font-weight: 600; }
+
+  footer { text-align: center; padding: 22px; color: var(--text3); font-size: 11px; border-top: 1px solid var(--border); margin-top: 8px; }
+
+  @media (max-width: 1100px) {
+    .kpi-row { grid-template-columns: repeat(3, 1fr); }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .grid-4 { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 700px) {
+    .main { padding: 14px; }
+    .kpi-row { grid-template-columns: 1fr 1fr; }
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="topbar-brand">Sunny's PowerBI Task 4</span>
+    <span class="topbar-title">Educational Performance & Resource Allocation</span>
+  </div>
+  <div class="topbar-right">
+    <span class="top-badge year">AY 2025–26</span>
+    <span class="top-badge">Greenfield Institute — K–12</span>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- KPI Row -->
+  <div class="section-label">Institution-Wide Performance Snapshot</div>
+  <div class="kpi-row">
+    <div class="kpi-card" style="--kpi-color:#2e6b4f">
+      <div class="kpi-label">Total Students</div>
+      <div class="kpi-value">3,847</div>
+      <div class="kpi-delta up">↑ 4.1% enrolled</div>
+      <div class="kpi-sub">Across Grades 1–12</div>
+    </div>
+    <div class="kpi-card" style="--kpi-color:#4a7fc1">
+      <div class="kpi-label">Overall GPA</div>
+      <div class="kpi-value">3.28</div>
+      <div class="kpi-delta up">↑ 0.14 vs last year</div>
+      <div class="kpi-sub">School-wide average</div>
+    </div>
+    <div class="kpi-card" style="--kpi-color:#d4823a">
+      <div class="kpi-label">Attendance Rate</div>
+      <div class="kpi-value">91.6%</div>
+      <div class="kpi-delta down">↓ 0.8% slight dip</div>
+      <div class="kpi-sub">YTD — all grades</div>
+    </div>
+    <div class="kpi-card" style="--kpi-color:#9b4db8">
+      <div class="kpi-label">Pass Rate</div>
+      <div class="kpi-value">88.3%</div>
+      <div class="kpi-delta up">↑ 2.1% improvement</div>
+      <div class="kpi-sub">End-term assessments</div>
+    </div>
+    <div class="kpi-card" style="--kpi-color:#c0392b">
+      <div class="kpi-label">At-Risk Students</div>
+      <div class="kpi-value">214</div>
+      <div class="kpi-delta down">↑ 18 flagged new</div>
+      <div class="kpi-sub">Requires intervention</div>
+    </div>
+  </div>
+
+  <!-- Row 1: Academic Performance by Subject + Grade Distribution -->
+  <div class="grid-3">
+    <!-- Subject Performance -->
+    <div class="card">
+      <div class="card-title">Academic Performance by Subject</div>
+      <div class="card-sub">School-wide average scores — all grades combined</div>
+      <div style="margin-top:4px;">
+        <div class="subj-bar">
+          <div class="subj-name">Mathematics</div>
+          <div class="subj-track"><div class="subj-fill" style="width:71%;background:#4a7fc1;"></div></div>
+          <div class="subj-val">71%</div>
+          <div class="subj-grade" style="background:rgba(212,130,58,0.12);color:#d4823a;">B-</div>
+        </div>
+        <div class="subj-bar">
+          <div class="subj-name">Science</div>
+          <div class="subj-track"><div class="subj-fill" style="width:76%;background:#2e6b4f;"></div></div>
+          <div class="subj-val">76%</div>
+          <div class="subj-grade" style="background:rgba(46,107,79,0.1);color:#2e6b4f;">B+</div>
+        </div>
+        <div class="subj-bar">
+          <div class="subj-name">English</div>
+          <div class="subj-track"><div class="subj-fill" style="width:83%;background:#2e6b4f;"></div></div>
+          <div class="subj-val">83%</div>
+          <div class="subj-grade" style="background:rgba(46,107,79,0.12);color:#2e6b4f;">A-</div>
+        </div>
+        <div class="subj-bar">
+          <div class="subj-name">History</div>
+          <div class="subj-track"><div class="subj-fill" style="width:79%;background:#2e6b4f;"></div></div>
+          <div class="subj-val">79%</div>
+          <div class="subj-grade" style="background:rgba(46,107,79,0.1);color:#2e6b4f;">B+</div>
+        </div>
+        <div class="subj-bar">
+          <div class="subj-name">Geography</div>
+          <div class="subj-track"><div class="subj-fill" style="width:74%;background:#4a7fc1;"></div></div>
+          <div class="subj-val">74%</div>
+          <div class="subj-grade" style="background:rgba(74,127,193,0.1);color:#4a7fc1;">B</div>
+        </div>
+        <div class="subj-bar">
+          <div class="subj-name">Computer Sci.</div>
+          <div class="subj-track"><div class="subj-fill" style="width:88%;background:#2e6b4f;"></div></div>
+          <div class="subj-val">88%</div>
+          <div class="subj-grade" style="background:rgba(46,107,79,0.12);color:#2e6b4f;">A</div>
+        </div>
+        <div class="subj-bar">
+          <div class="subj-name">Arts</div>
+          <div class="subj-track"><div class="subj-fill" style="width:91%;background:#9b4db8;"></div></div>
+          <div class="subj-val">91%</div>
+          <div class="subj-grade" style="background:rgba(155,77,184,0.1);color:#9b4db8;">A</div>
+        </div>
+        <div class="subj-bar">
+          <div class="subj-name">Physical Ed.</div>
+          <div class="subj-track"><div class="subj-fill" style="width:95%;background:#2e6b4f;"></div></div>
+          <div class="subj-val">95%</div>
+          <div class="subj-grade" style="background:rgba(46,107,79,0.12);color:#2e6b4f;">A+</div>
+        </div>
+        <div class="subj-bar">
+          <div class="subj-name">Economics</div>
+          <div class="subj-track"><div class="subj-fill" style="width:68%;background:#d4823a;"></div></div>
+          <div class="subj-val">68%</div>
+          <div class="subj-grade" style="background:rgba(192,57,43,0.08);color:#c0392b;">C+</div>
+        </div>
+        <div class="subj-bar">
+          <div class="subj-name">Chemistry</div>
+          <div class="subj-track"><div class="subj-fill" style="width:65%;background:#c0392b;"></div></div>
+          <div class="subj-val">65%</div>
+          <div class="subj-grade" style="background:rgba(192,57,43,0.1);color:#c0392b;">C</div>
+        </div>
+      </div>
+      <div style="margin-top:14px;padding:10px 12px;background:rgba(192,57,43,0.06);border-radius:8px;border:1px solid rgba(192,57,43,0.15);font-size:12px;color:#c0392b;">
+        ⚠ Mathematics, Chemistry, and Economics need targeted curriculum support
+      </div>
+    </div>
+
+    <!-- Grade Distribution Donut -->
+    <div class="card">
+      <div class="card-title">Grade Distribution</div>
+      <div class="card-sub">All subjects — percentage of students per grade band</div>
+      <div class="chart-wrap" style="height:180px;">
+        <canvas id="gradeChart" role="img" aria-label="Grade distribution doughnut: A 22%, B 34%, C 24%, D 13%, F 7%">Grade bands from A to F</canvas>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;">
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);">
+          <span style="width:10px;height:10px;border-radius:2px;background:#2e6b4f;display:inline-block;"></span>A (90–100%): 22%
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);">
+          <span style="width:10px;height:10px;border-radius:2px;background:#4a7fc1;display:inline-block;"></span>B (75–89%): 34%
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);">
+          <span style="width:10px;height:10px;border-radius:2px;background:#d4823a;display:inline-block;"></span>C (60–74%): 24%
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);">
+          <span style="width:10px;height:10px;border-radius:2px;background:#e8a44a;display:inline-block;"></span>D (50–59%): 13%
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);">
+          <span style="width:10px;height:10px;border-radius:2px;background:#c0392b;display:inline-block;"></span>F (Below 50%): 7%
+        </div>
+      </div>
+      <div style="margin-top:16px;padding:10px;background:rgba(46,107,79,0.07);border-radius:8px;border:1px solid rgba(46,107,79,0.15);font-size:12px;color:var(--accent);">
+        56% of students are in A/B band — up from 51% last year
+      </div>
+    </div>
+
+    <!-- Performance by Grade Level -->
+    <div class="card">
+      <div class="card-title">Avg GPA by Grade Level</div>
+      <div class="card-sub">Trend across school years — Grade 1 through 12</div>
+      <div class="chart-wrap" style="height:180px;">
+        <canvas id="gradeGpaChart" role="img" aria-label="Average GPA by school grade level, grades 1 through 12"></canvas>
+      </div>
+      <div style="margin-top:14px;">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:6px;">
+          <span>Grade 1–4 (Primary)</span><span style="font-weight:600;color:var(--accent)">3.54 avg</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:6px;">
+          <span>Grade 5–8 (Middle)</span><span style="font-weight:600;color:var(--accent3)">3.21 avg</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);">
+          <span>Grade 9–12 (High)</span><span style="font-weight:600;color:var(--accent2)">3.06 avg</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 2: Attendance Trend + Resource Allocation -->
+  <div class="grid-2">
+    <!-- Attendance monthly trend -->
+    <div class="card">
+      <div class="card-title">Monthly Attendance Rate Trend</div>
+      <div class="card-sub">AY 2024–25 — school-wide attendance percentage by month</div>
+      <div style="display:flex;gap:16px;margin-bottom:12px;flex-wrap:wrap;">
+        <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);">
+          <span style="width:12px;height:3px;background:#2e6b4f;display:inline-block;border-radius:2px;"></span>Attendance %
+        </span>
+        <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);">
+          <span style="width:12px;height:2px;background:#c0392b;border-top:2px dashed #c0392b;display:inline-block;"></span>Target (90%)
+        </span>
+      </div>
+      <div class="chart-wrap" style="height:220px;">
+        <canvas id="attendChart" role="img" aria-label="Monthly attendance rate trend with 90% target line">Monthly attendance percentages across AY 2024-25</canvas>
+      </div>
+    </div>
+
+    <!-- Resource Allocation Table -->
+    <div class="card">
+      <div class="card-title">Resource Allocation & Utilization Gaps</div>
+      <div class="card-sub">Budget, staff, equipment — current allocation vs. ideal</div>
+      <table class="res-table">
+        <thead>
+          <tr>
+            <th>Department</th>
+            <th>Budget Used</th>
+            <th>Utilization</th>
+            <th>Staff Ratio</th>
+            <th>Gap Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight:600;color:var(--text)">Mathematics</td>
+            <td>$84,200</td>
+            <td>
+              <div class="util-bar">
+                <div class="util-track"><div class="util-fill" style="width:62%;background:#c0392b;"></div></div>
+                <span style="font-size:11px;color:var(--red)">62%</span>
+              </div>
+            </td>
+            <td>1:34</td>
+            <td><span class="gap-pill gap-critical">Critical Gap</span></td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;color:var(--text)">Science</td>
+            <td>$112,000</td>
+            <td>
+              <div class="util-bar">
+                <div class="util-track"><div class="util-fill" style="width:78%;background:#d4823a;"></div></div>
+                <span style="font-size:11px;color:var(--accent2)">78%</span>
+              </div>
+            </td>
+            <td>1:28</td>
+            <td><span class="gap-pill gap-moderate">Moderate</span></td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;color:var(--text)">English</td>
+            <td>$96,500</td>
+            <td>
+              <div class="util-bar">
+                <div class="util-track"><div class="util-fill" style="width:91%;background:#2e6b4f;"></div></div>
+                <span style="font-size:11px;color:var(--accent)">91%</span>
+              </div>
+            </td>
+            <td>1:22</td>
+            <td><span class="gap-pill gap-sufficient">Sufficient</span></td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;color:var(--text)">Computer Sci.</td>
+            <td>$67,800</td>
+            <td>
+              <div class="util-bar">
+                <div class="util-track"><div class="util-fill" style="width:55%;background:#c0392b;"></div></div>
+                <span style="font-size:11px;color:var(--red)">55%</span>
+              </div>
+            </td>
+            <td>1:38</td>
+            <td><span class="gap-pill gap-critical">Critical Gap</span></td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;color:var(--text)">Arts</td>
+            <td>$44,200</td>
+            <td>
+              <div class="util-bar">
+                <div class="util-track"><div class="util-fill" style="width:88%;background:#2e6b4f;"></div></div>
+                <span style="font-size:11px;color:var(--accent)">88%</span>
+              </div>
+            </td>
+            <td>1:20</td>
+            <td><span class="gap-pill gap-sufficient">Sufficient</span></td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;color:var(--text)">History</td>
+            <td>$52,100</td>
+            <td>
+              <div class="util-bar">
+                <div class="util-track"><div class="util-fill" style="width:73%;background:#d4823a;"></div></div>
+                <span style="font-size:11px;color:var(--accent2)">73%</span>
+              </div>
+            </td>
+            <td>1:26</td>
+            <td><span class="gap-pill gap-moderate">Moderate</span></td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;color:var(--text)">Chemistry</td>
+            <td>$78,000</td>
+            <td>
+              <div class="util-bar">
+                <div class="util-track"><div class="util-fill" style="width:59%;background:#c0392b;"></div></div>
+                <span style="font-size:11px;color:var(--red)">59%</span>
+              </div>
+            </td>
+            <td>1:36</td>
+            <td><span class="gap-pill gap-critical">Critical Gap</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Row 3: Budget Chart + At-Risk + Insights -->
+  <div class="grid-3">
+    <!-- Budget Breakdown -->
+    <div class="card">
+      <div class="card-title">Budget Allocation by Department</div>
+      <div class="card-sub">Total annual budget: $892,000 — AY 2024–25</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+        <span style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2);"><span style="width:8px;height:8px;border-radius:2px;background:#2e6b4f;display:inline-block;"></span>Science $112k</span>
+        <span style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2);"><span style="width:8px;height:8px;border-radius:2px;background:#4a7fc1;display:inline-block;"></span>Math $84k</span>
+        <span style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2);"><span style="width:8px;height:8px;border-radius:2px;background:#d4823a;display:inline-block;"></span>English $96k</span>
+        <span style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2);"><span style="width:8px;height:8px;border-radius:2px;background:#9b4db8;display:inline-block;"></span>Chemistry $78k</span>
+        <span style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2);"><span style="width:8px;height:8px;border-radius:2px;background:#e8a44a;display:inline-block;"></span>Comp Sci $68k</span>
+        <span style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2);"><span style="width:8px;height:8px;border-radius:2px;background:#888;display:inline-block;"></span>Others $454k</span>
+      </div>
+      <div class="chart-wrap" style="height:200px;">
+        <canvas id="budgetChart" role="img" aria-label="Budget allocation doughnut chart by department">Science, Math, English and other departments</canvas>
+      </div>
+    </div>
+
+    <!-- At-Risk Students -->
+    <div class="card">
+      <div class="card-title">At-Risk Student Analysis</div>
+      <div class="card-sub">214 flagged students — risk factor breakdown</div>
+      <div class="chart-wrap" style="height:160px;margin-bottom:14px;">
+        <canvas id="riskChart" role="img" aria-label="At-risk student categories bar chart">Categories: low attendance, failing grades, both, behavioral</canvas>
+      </div>
+      <div style="margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span style="color:var(--text2);">Low Attendance Only</span><span style="font-weight:600;color:var(--text)">68 students</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span style="color:var(--text2);">Failing Grades Only</span><span style="font-weight:600;color:var(--text)">72 students</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span style="color:var(--text2);">Both Attendance + Grades</span><span style="font-weight:600;color:var(--red)">48 students</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:var(--text2);">Behavioral Concerns</span><span style="font-weight:600;color:var(--accent2)">26 students</span></div>
+      </div>
+      <div style="padding:10px;background:rgba(192,57,43,0.06);border-radius:8px;border:1px solid rgba(192,57,43,0.15);font-size:12px;color:var(--red);">
+        48 students need <strong>immediate multi-factor intervention</strong>
+      </div>
+    </div>
+
+    <!-- Data-Driven Insights -->
+    <div class="card">
+      <div class="card-title">Data-Driven Decision Insights</div>
+      <div class="card-sub">Recommended actions based on analytics</div>
+      <div style="margin-top:4px;">
+        <div class="insight warn">
+          <div class="insight-icon">📐</div>
+          <div class="insight-text"><strong>Maths needs urgent support.</strong> 34-student teacher ratio with only 62% resource utilization is leading to lower scores. Recommend hiring 2 additional teachers and deploying adaptive learning tools.</div>
+        </div>
+        <div class="insight info">
+          <div class="insight-icon">💻</div>
+          <div class="insight-text"><strong>Computer Science is understaffed.</strong> Despite high student scores (88%), the 1:38 ratio is unsustainable. Prioritize lab expansion and add 3 faculty positions next fiscal year.</div>
+        </div>
+        <div class="insight success">
+          <div class="insight-icon">📈</div>
+          <div class="insight-text"><strong>GPA trend is improving.</strong> School-wide average rose from 3.14 to 3.28. Grades 1–4 performance is strongest — middle school mentoring should replicate primary-level strategies.</div>
+        </div>
+        <div class="insight warn">
+          <div class="insight-icon">📅</div>
+          <div class="insight-text"><strong>November & February attendance dips.</strong> Seasonal absence spikes coincide with exam anxiety. Introduce counselling sessions and flexible re-sit policies during these months.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>Power BI Task 4: Educational Performance & Resource Allocation &nbsp;|&nbsp; Greenfield Institute Simulation Data &nbsp;|&nbsp; Sunny Lakhwani &nbsp;|&nbsp; AY 2025–26</footer>
+
+<script>
+new Chart(document.getElementById('gradeChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['A (90-100%)','B (75-89%)','C (60-74%)','D (50-59%)','F (<50%)'],
+    datasets: [{
+      data: [22, 34, 24, 13, 7],
+      backgroundColor: ['#2e6b4f','#4a7fc1','#d4823a','#e8a44a','#c0392b'],
+      borderColor: '#ffffff',
+      borderWidth: 3,
+      hoverOffset: 6
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '62%',
+    plugins: { legend: { display: false } }
+  }
+});
+
+const gpas = [3.72, 3.65, 3.58, 3.42, 3.38, 3.24, 3.18, 3.04, 3.12, 3.08, 2.98, 3.06];
+new Chart(document.getElementById('gradeGpaChart'), {
+  type: 'line',
+  data: {
+    labels: ['Gr 1','Gr 2','Gr 3','Gr 4','Gr 5','Gr 6','Gr 7','Gr 8','Gr 9','Gr 10','Gr 11','Gr 12'],
+    datasets: [{
+      label: 'Avg GPA',
+      data: gpas,
+      borderColor: '#4a7fc1',
+      backgroundColor: 'rgba(74,127,193,0.08)',
+      borderWidth: 2,
+      pointRadius: 4,
+      pointBackgroundColor: '#4a7fc1',
+      tension: 0.35,
+      fill: true
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { color: '#9a9284', font: { size: 10 } }, grid: { color: 'rgba(28,26,21,0.05)' } },
+      y: { min: 2.5, max: 4.0, ticks: { color: '#9a9284', font: { size: 10 } }, grid: { color: 'rgba(28,26,21,0.06)' } }
+    }
+  }
+});
+
+const months = ['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'];
+const attd = [93.2, 94.1, 92.8, 91.4, 93.0, 92.5, 91.8, 88.4, 90.2, 93.7, 87.9, 91.6];
+new Chart(document.getElementById('attendChart'), {
+  type: 'line',
+  data: {
+    labels: months,
+    datasets: [
+      {
+        label: 'Attendance %',
+        data: attd,
+        borderColor: '#2e6b4f',
+        backgroundColor: 'rgba(46,107,79,0.07)',
+        borderWidth: 2.5,
+        pointRadius: 4,
+        pointBackgroundColor: attd.map(v => v < 90 ? '#c0392b' : '#2e6b4f'),
+        tension: 0.3,
+        fill: true
+      },
+      {
+        label: 'Target (90%)',
+        data: Array(12).fill(90),
+        borderColor: '#c0392b',
+        borderWidth: 1.5,
+        borderDash: [6, 4],
+        pointRadius: 0,
+        fill: false
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
+    scales: {
+      x: { ticks: { color: '#9a9284', font: { size: 11 } }, grid: { color: 'rgba(28,26,21,0.05)' } },
+      y: { min: 82, max: 98, ticks: { color: '#9a9284', font: { size: 11 }, callback: v => v + '%' }, grid: { color: 'rgba(28,26,21,0.06)' } }
+    }
+  }
+});
+
+new Chart(document.getElementById('budgetChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Science','English','Math','Chemistry','Comp Sci','History','Arts','Physical Ed','Others'],
+    datasets: [{
+      data: [112000, 96500, 84200, 78000, 67800, 52100, 44200, 38400, 318800],
+      backgroundColor: ['#2e6b4f','#d4823a','#4a7fc1','#9b4db8','#e8a44a','#6b8e5a','#c0392b','#76b041','#aaaaaa'],
+      borderColor: '#ffffff',
+      borderWidth: 2,
+      hoverOffset: 8
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '58%',
+    plugins: { legend: { display: false }, tooltip: {
+      callbacks: { label: (ctx) => ` ${ctx.label}: $${(ctx.raw/1000).toFixed(0)}k (${Math.round(ctx.raw/8920)}%)` }
+    }}
+  }
+});
+
+new Chart(document.getElementById('riskChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Low Attendance', 'Failing Grades', 'Both Factors', 'Behavioral'],
+    datasets: [{
+      data: [68, 72, 48, 26],
+      backgroundColor: ['#d4823a','#c0392b','#8b0000','#9b4db8'],
+      borderRadius: 6,
+      borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { color: '#9a9284', font: { size: 10 } }, grid: { display: false } },
+      y: { ticks: { color: '#9a9284', font: { size: 11 } }, grid: { color: 'rgba(28,26,21,0.06)' } }
+    }
+  }
+});
+</script>
+</body>
+</html>
