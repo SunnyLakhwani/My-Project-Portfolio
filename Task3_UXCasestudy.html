@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task 3 — UX Case Study | Zomato | CodeAlpha</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1C1917;
+    --ink-soft: #44403C;
+    --ink-muted: #78716C;
+    --paper: #FAFAF8;
+    --paper-warm: #F5F2EE;
+    --paper-card: #FFFFFF;
+    --rule: #E7E5E4;
+    --accent: #E8321A;
+    --accent-light: #FEE9E5;
+    --blue: #1D4ED8;
+    --blue-light: #EFF6FF;
+    --amber: #D97706;
+    --amber-light: #FFFBEB;
+    --green: #16A34A;
+    --green-light: #F0FDF4;
+    --purple: #7C3AED;
+    --purple-light: #F5F3FF;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--ink);
+    line-height: 1.6;
+  }
+
+  /* ---- COVER ---- */
+  .cover {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--ink);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cover-noise {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.4;
+  }
+
+  .cover-stripe {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 40%;
+    height: 100%;
+    background: var(--accent);
+    clip-path: polygon(20% 0%, 100% 0%, 100% 100%, 0% 100%);
+    opacity: 0.08;
+  }
+
+  .cover-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 80px 60px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    position: relative;
+  }
+
+  .cover-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: absolute;
+    top: 80px;
+    left: 60px;
+    right: 60px;
+  }
+
+  .cover-logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .z-logo {
+    width: 44px;
+    height: 44px;
+    background: var(--accent);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 800;
+    color: #fff;
+    font-style: italic;
+  }
+
+  .z-logo-label {
+    color: rgba(255,255,255,0.5);
+    font-size: 13px;
+    letter-spacing: 0.5px;
+  }
+
+  .cover-meta-top {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    text-align: right;
+    line-height: 1.8;
+  }
+
+  .cover-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+
+  .cover-eyebrow-line {
+    width: 40px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .cover-h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(52px, 7vw, 88px);
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.0;
+    letter-spacing: -2px;
+    margin-bottom: 28px;
+  }
+
+  .cover-h1 em {
+    font-style: italic;
+    color: rgba(255,255,255,0.35);
+  }
+
+  .cover-bottom-bar {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 28px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+  }
+
+  .cover-stat {}
+  .cover-stat-num {
+    font-family: 'Fraunces', serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .cover-stat-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* ---- TOC ---- */
+  .toc-section {
+    background: var(--paper-warm);
+    border-bottom: 1px solid var(--rule);
+    padding: 60px;
+    max-width: none;
+  }
+
+  .toc-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 60px;
+  }
+
+  .toc-label {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 20px;
+  }
+
+  .toc-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .toc-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: default;
+    transition: background 0.2s;
+    text-decoration: none;
+    color: var(--ink-soft);
+    font-size: 13px;
+  }
+
+  .toc-item:hover { background: var(--rule); }
+  .toc-num { font-size: 10px; color: var(--ink-muted); width: 20px; font-variant-numeric: tabular-nums; }
+
+  .toc-abstract {
+    border-left: 3px solid var(--accent);
+    padding-left: 24px;
+  }
+
+  .toc-abstract-title {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--ink);
+  }
+
+  .toc-abstract p {
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.7;
+    margin-bottom: 12px;
+  }
+
+  /* ---- PAGE ---- */
+  .page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 80px 60px;
+  }
+
+  .page-divider {
+    border-bottom: 1px solid var(--rule);
+  }
+
+  /* ---- SECTION HEADERS ---- */
+  .cs-section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+
+  .cs-sec-num {
+    font-family: 'Fraunces', serif;
+    font-size: 64px;
+    font-weight: 300;
+    color: var(--rule);
+    line-height: 1;
+    flex-shrink: 0;
+    letter-spacing: -2px;
+  }
+
+  .cs-sec-info {}
+
+  .cs-sec-sub {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 4px;
+  }
+
+  .cs-sec-title {
+    font-family: 'Fraunces', serif;
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.5px;
+  }
+
+  /* ---- OVERVIEW / STATS ---- */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 48px;
+  }
+
+  .overview-cell {
+    background: var(--paper-card);
+    padding: 28px 24px;
+  }
+
+  .ov-val {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 4px;
+    letter-spacing: -0.5px;
+  }
+
+  .ov-key {
+    font-size: 11px;
+    color: var(--ink-muted);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* ---- USER JOURNEY MAP ---- */
+  .journey-map {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 48px;
+  }
+
+  .journey-header {
+    background: var(--ink);
+    color: #fff;
+    padding: 20px 24px;
+    display: grid;
+    grid-template-columns: 160px repeat(5, 1fr);
+    gap: 16px;
+    align-items: center;
+  }
+
+  .jh-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+  }
+
+  .jh-stage {
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+
+  .journey-row {
+    display: grid;
+    grid-template-columns: 160px repeat(5, 1fr);
+    gap: 16px;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--rule);
+    align-items: start;
+  }
+
+  .journey-row:last-child { border-bottom: none; }
+
+  .jr-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-muted);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding-top: 4px;
+  }
+
+  .jr-cell {
+    font-size: 11px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .jr-emoji { font-size: 18px; display: block; margin-bottom: 4px; text-align: center; }
+
+  /* Emotion line */
+  .emotion-row .jr-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .emotion-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .emotion-label { font-size: 10px; }
+
+  /* Pain level */
+  .pain-row .jr-cell { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .pain-bar { height: 4px; border-radius: 2px; background: var(--rule); width: 80%; }
+  .pain-fill { height: 100%; border-radius: 2px; }
+
+  /* ---- HEURISTIC TABLE ---- */
+  .heuristic-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 48px;
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .heuristic-table thead tr {
+    background: var(--ink);
+    color: #fff;
+  }
+
+  .heuristic-table th {
+    padding: 14px 20px;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-align: left;
+    font-weight: 600;
+  }
+
+  .heuristic-table td {
+    padding: 14px 20px;
+    font-size: 12px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  .heuristic-table tr:last-child td { border-bottom: none; }
+
+  .heuristic-table tr:nth-child(even) td { background: var(--paper-warm); }
+
+  .sev-chip {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 100px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .sev-chip.crit { background: var(--accent-light); color: var(--accent); }
+  .sev-chip.high { background: var(--amber-light); color: var(--amber); }
+  .sev-chip.med { background: var(--blue-light); color: var(--blue); }
+  .sev-chip.low { background: var(--green-light); color: var(--green); }
+
+  /* ---- FINDINGS GRID ---- */
+  .findings-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 48px;
+  }
+
+  .finding-card {
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--paper-card);
+  }
+
+  .finding-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .finding-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+
+  .finding-icon.str { background: var(--green-light); }
+  .finding-icon.wk { background: var(--accent-light); }
+  .finding-icon.opp { background: var(--blue-light); }
+  .finding-icon.thr { background: var(--amber-light); }
+
+  .finding-title { font-size: 13px; font-weight: 600; }
+
+  .finding-body { padding: 16px 20px; }
+
+  .finding-list { list-style: none; }
+  .finding-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--rule);
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .finding-list li:last-child { border-bottom: none; }
+
+  .fl-bullet {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .fl-bullet.str { background: var(--green-light); color: var(--green); }
+  .fl-bullet.wk { background: var(--accent-light); color: var(--accent); }
+  .fl-bullet.opp { background: var(--blue-light); color: var(--blue); }
+  .fl-bullet.thr { background: var(--amber-light); color: var(--amber); }
+
+  /* ---- IMPROVEMENTS ---- */
+  .improvement-section {
+    margin-bottom: 48px;
+  }
+
+  .improvement-card {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+
+  .imp-header {
+    padding: 24px 28px 20px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .imp-num {
+    font-family: 'Fraunces', serif;
+    font-size: 48px;
+    font-weight: 600;
+    line-height: 1;
+    flex-shrink: 0;
+    letter-spacing: -2px;
+  }
+
+  .imp-num.c1 { color: var(--accent-light); }
+  .imp-num.c2 { color: var(--blue-light); }
+  .imp-num.c3 { color: var(--purple-light); }
+
+  .imp-header-text {}
+
+  .imp-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 4px;
+  }
+
+  .imp-title {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+
+  .imp-desc {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+
+  .imp-body {
+    padding: 24px 28px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+  }
+
+  .imp-col-title {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .imp-problem, .imp-solution, .imp-mockup { }
+
+  .imp-text {
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+
+  /* Mockup sketches */
+  .mockup-sketch {
+    background: var(--paper-warm);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 16px;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .sk-bar {
+    height: 8px;
+    background: var(--rule);
+    border-radius: 3px;
+  }
+
+  .sk-bar.accent { background: rgba(232,50,26,0.3); }
+  .sk-bar.blue { background: rgba(29,78,216,0.2); }
+  .sk-bar.purple { background: rgba(124,58,237,0.2); }
+  .sk-bar.short { width: 60%; }
+  .sk-bar.xs { width: 40%; }
+
+  .sk-box {
+    background: var(--rule);
+    border-radius: 6px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+
+  .sk-box.primary { background: rgba(232,50,26,0.15); color: var(--accent); }
+  .sk-box.blue-box { background: rgba(29,78,216,0.1); color: var(--blue); }
+  .sk-box.purple-box { background: rgba(124,58,237,0.1); color: var(--purple); }
+
+  .sk-row { display: flex; gap: 8px; }
+  .sk-pill { background: var(--rule); border-radius: 100px; height: 22px; flex: 1; }
+  .sk-pill.active { background: rgba(232,50,26,0.2); }
+
+  .sk-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .sk-mini-card { background: var(--rule); border-radius: 6px; height: 50px; }
+
+  .sk-star-row { display: flex; gap: 4px; }
+  .sk-star { font-size: 14px; color: rgba(255,184,0,0.4); }
+
+  /* ---- RECOMMENDATIONS SUMMARY ---- */
+  .rec-summary {
+    background: var(--ink);
+    border-radius: 16px;
+    padding: 40px;
+    color: #fff;
+    margin-bottom: 48px;
+  }
+
+  .rec-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    margin-top: 32px;
+  }
+
+  .rec-item {}
+
+  .rec-num {
+    font-family: 'Fraunces', serif;
+    font-size: 40px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.1);
+    margin-bottom: 4px;
+  }
+
+  .rec-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #fff;
+  }
+
+  .rec-desc {
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.6;
+  }
+
+  .rec-impact {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 10px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .rec-impact.high { background: rgba(232,50,26,0.2); color: #ff8a6d; }
+  .rec-impact.med { background: rgba(29,78,216,0.2); color: #7CA9FF; }
+
+  /* ---- CONCLUSION ---- */
+  .conclusion {
+    background: var(--paper-warm);
+    border: 1px solid var(--rule);
+    border-radius: 16px;
+    padding: 40px;
+    margin-bottom: 48px;
+  }
+
+  .conclusion-quote {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-style: italic;
+    line-height: 1.4;
+    color: var(--ink);
+    margin-bottom: 24px;
+    padding-left: 24px;
+    border-left: 4px solid var(--accent);
+  }
+
+  .conclusion-text {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.7;
+    column-count: 2;
+    column-gap: 40px;
+  }
+
+  /* ---- FOOTER ---- */
+  .cs-footer {
+    border-top: 1px solid var(--rule);
+    padding: 40px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    max-width: none;
+  }
+
+  @media (max-width: 900px) {
+    .cover-bottom-bar, .overview-grid, .findings-grid, .rec-grid { grid-template-columns: 1fr 1fr; }
+    .imp-body { grid-template-columns: 1fr; }
+    .conclusion-text { column-count: 1; }
+    .journey-map, .heuristic-table { overflow-x: auto; }
+    .journey-header, .journey-row { min-width: 700px; }
+  }
+
+  @media (max-width: 600px) {
+    .page { padding: 40px 24px; }
+    .cover-inner { padding: 40px 24px; }
+    .cover-bottom-bar { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER PAGE -->
+<div class="cover">
+  <div class="cover-noise"></div>
+  <div class="cover-stripe"></div>
+  <div class="cover-inner">
+    <div class="cover-top">
+      <div class="cover-logo-area">
+        <div class="z-logo">Z</div>
+        <div class="z-logo-label">Zomato · Case Study Subject</div>
+      </div>
+      <div class="cover-meta-top">
+        CodeAlpha UI/UX Intern Sunny Lakhwani<br>
+        Task 03 · UX Case Study<br>
+        May 2026
+      </div>
+    </div>
+    <div class="cover-eyebrow">
+      <div class="cover-eyebrow-line"></div>
+      UX Case Study
+    </div>
+    <h1 class="cover-h1">Dissecting<br>Zomato's<br><em>User Experience</em></h1>
+    <div class="cover-bottom-bar">
+      <div class="cover-stat">
+        <div class="cover-stat-num">12M+</div>
+        <div class="cover-stat-label">Active Users</div>
+      </div>
+      <div class="cover-stat">
+        <div class="cover-stat-num">5</div>
+        <div class="cover-stat-label">Journey Stages</div>
+      </div>
+      <div class="cover-stat">
+        <div class="cover-stat-num">3</div>
+        <div class="cover-stat-label">Key Improvements</div>
+      </div>
+      <div class="cover-stat">
+        <div class="cover-stat-num">4.1</div>
+        <div class="cover-stat-label">Current App Store Rating</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS + ABSTRACT -->
+<div class="toc-section">
+  <div class="toc-inner">
+    <div>
+      <div class="toc-label">Contents</div>
+      <ul class="toc-list">
+        <li class="toc-item"><span class="toc-num">01</span>App Overview & Context</li>
+        <li class="toc-item"><span class="toc-num">02</span>User Journey Mapping</li>
+        <li class="toc-item"><span class="toc-num">03</span>Heuristic Evaluation</li>
+        <li class="toc-item"><span class="toc-num">04</span>Strengths & Weaknesses</li>
+        <li class="toc-item"><span class="toc-num">05</span>3 Proposed Improvements</li>
+        <li class="toc-item"><span class="toc-num">06</span>Impact Summary</li>
+        <li class="toc-item"><span class="toc-num">07</span>Conclusion</li>
+      </ul>
+    </div>
+    <div class="toc-abstract">
+      <div class="toc-abstract-title">Abstract</div>
+      <p>This case study conducts a structured UX evaluation of Zomato, India's leading food delivery platform serving over 12 million active users across 800+ cities. The analysis applies Nielsen's 10 Usability Heuristics, user journey mapping, and competitive benchmarking to surface experience gaps.</p>
+      <p>Through systematic audit, three high-impact improvement opportunities are identified: restructuring the search and discovery architecture, reducing order-flow cognitive load, and redesigning the post-delivery feedback loop. Each improvement is accompanied by annotated mockup sketches and implementation rationale.</p>
+      <p style="font-size:12px;color:var(--ink-muted);margin:0;">Method: Expert heuristic review + secondary user research synthesis · Tools: Figma, cognitive walkthrough · Scope: Mobile app (iOS/Android)</p>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 1: OVERVIEW -->
+<div class="page page-divider">
+  <div class="cs-section-header">
+    <div class="cs-sec-num">01</div>
+    <div class="cs-sec-info">
+      <div class="cs-sec-sub">Context</div>
+      <h2 class="cs-sec-title">App Overview</h2>
+    </div>
+  </div>
+
+  <div class="overview-grid">
+    <div class="overview-cell">
+      <div class="ov-val">2008</div>
+      <div class="ov-key">Founded</div>
+    </div>
+    <div class="overview-cell">
+      <div class="ov-val">800+</div>
+      <div class="ov-key">Cities Served</div>
+    </div>
+    <div class="overview-cell">
+      <div class="ov-val">4.1 ★</div>
+      <div class="ov-key">App Store Rating</div>
+    </div>
+    <div class="overview-cell">
+      <div class="ov-val">~30min</div>
+      <div class="ov-key">Avg. Delivery Time</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:0;">
+    <div>
+      <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--ink-muted);margin-bottom:12px;">Target Users</div>
+      <div style="font-size:13px;color:var(--ink-soft);line-height:1.8;">
+        <strong style="color:var(--ink);">Primary:</strong> Urban professionals, 22–38, smartphone-native, ordering 3–5x/week for convenience.<br>
+        <strong style="color:var(--ink);">Secondary:</strong> Students and families using Zomato Pro for savings. Occasional users ordering for events or explorations.
+      </div>
+    </div>
+    <div>
+      <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--ink-muted);margin-bottom:12px;">Core Jobs-to-be-Done</div>
+      <div style="font-size:13px;color:var(--ink-soft);line-height:1.8;">
+        1. Find good food fast without decision fatigue.<br>
+        2. Place an order with minimal friction.<br>
+        3. Track delivery reliably and stress-free.<br>
+        4. Build trust through consistent ratings & reviews.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 2: USER JOURNEY -->
+<div class="page page-divider">
+  <div class="cs-section-header">
+    <div class="cs-sec-num">02</div>
+    <div class="cs-sec-info">
+      <div class="cs-sec-sub">Research</div>
+      <h2 class="cs-sec-title">User Journey Map</h2>
+    </div>
+  </div>
+
+  <div class="journey-map">
+    <div class="journey-header">
+      <div class="jh-label">Touchpoint</div>
+      <div class="jh-stage">Discovery</div>
+      <div class="jh-stage">Selection</div>
+      <div class="jh-stage">Ordering</div>
+      <div class="jh-stage">Tracking</div>
+      <div class="jh-stage">Post-Order</div>
+    </div>
+    <div class="journey-row">
+      <div class="jr-label">User Action</div>
+      <div class="jr-cell">Opens app, sees homepage feed, scrolls categories</div>
+      <div class="jr-cell">Views restaurant, browses menu, reads reviews</div>
+      <div class="jr-cell">Adds items, reviews cart, applies coupon, pays</div>
+      <div class="jr-cell">Watches live map, receives order updates</div>
+      <div class="jr-cell">Rates food & delivery, contacts support if needed</div>
+    </div>
+    <div class="journey-row emotion-row">
+      <div class="jr-label">Emotion</div>
+      <div class="jr-cell"><span class="jr-emoji">😐</span>Curious but neutral — overwhelmed by ads</div>
+      <div class="jr-cell"><span class="jr-emoji">🤔</span>Considering — reads reviews carefully</div>
+      <div class="jr-cell"><span class="jr-emoji">😤</span>Frustrated — too many upsell pop-ups</div>
+      <div class="jr-cell"><span class="jr-emoji">😊</span>Cautiously satisfied — map works well</div>
+      <div class="jr-cell"><span class="jr-emoji">😑</span>Neutral — rating UI feels like a chore</div>
+    </div>
+    <div class="journey-row pain-row">
+      <div class="jr-label">Pain Level</div>
+      <div class="jr-cell"><div class="pain-bar"><div class="pain-fill" style="width:55%;background:#D97706;"></div></div><div style="font-size:10px;margin-top:4px;color:var(--ink-muted);">Medium</div></div>
+      <div class="jr-cell"><div class="pain-bar"><div class="pain-fill" style="width:35%;background:#16A34A;"></div></div><div style="font-size:10px;margin-top:4px;color:var(--ink-muted);">Low</div></div>
+      <div class="jr-cell"><div class="pain-bar"><div class="pain-fill" style="width:85%;background:#E8321A;"></div></div><div style="font-size:10px;margin-top:4px;color:var(--ink-muted);">High</div></div>
+      <div class="jr-cell"><div class="pain-bar"><div class="pain-fill" style="width:25%;background:#16A34A;"></div></div><div style="font-size:10px;margin-top:4px;color:var(--ink-muted);">Low</div></div>
+      <div class="jr-cell"><div class="pain-bar"><div class="pain-fill" style="width:65%;background:#D97706;"></div></div><div style="font-size:10px;margin-top:4px;color:var(--ink-muted);">Medium</div></div>
+    </div>
+    <div class="journey-row">
+      <div class="jr-label">Opportunity</div>
+      <div class="jr-cell">Smarter personalization; reduce ad noise</div>
+      <div class="jr-cell">Surface top dish photos above fold</div>
+      <div class="jr-cell">Reduce checkout steps; progressive disclosure</div>
+      <div class="jr-cell">Proactive ETAs; celebrate arrival</div>
+      <div class="jr-cell">Make feedback feel rewarding, not mandatory</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 3: HEURISTIC EVALUATION -->
+<div class="page page-divider">
+  <div class="cs-section-header">
+    <div class="cs-sec-num">03</div>
+    <div class="cs-sec-info">
+      <div class="cs-sec-sub">Evaluation</div>
+      <h2 class="cs-sec-title">Heuristic Evaluation</h2>
+    </div>
+  </div>
+
+  <table class="heuristic-table">
+    <thead>
+      <tr>
+        <th style="width:200px;">Heuristic</th>
+        <th>Observation</th>
+        <th style="width:100px;">Severity</th>
+        <th style="width:160px;">Example</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="font-weight:600;color:var(--ink);">Visibility of System Status</td>
+        <td>Live order tracking map is well-executed. However, real-time preparation status from the kitchen is missing — users don't know if the restaurant has even seen the order.</td>
+        <td><span class="sev-chip high">High</span></td>
+        <td>No "Restaurant Accepted" visual confirmation</td>
+      </tr>
+      <tr>
+        <td style="font-weight:600;color:var(--ink);">Match with Real World</td>
+        <td>Language is mostly clear. "Intercity Orders" label confuses non-metropolitan users. Food category icons are well-chosen and culturally relevant.</td>
+        <td><span class="sev-chip med">Medium</span></td>
+        <td>"Intercity" vs. "Send to Another City"</td>
+      </tr>
+      <tr>
+        <td style="font-weight:600;color:var(--ink);">User Control & Freedom</td>
+        <td>Cancellation is buried in 3+ layers. Modifying an order after placement is impossible. No obvious undo for cart removal.</td>
+        <td><span class="sev-chip crit">Critical</span></td>
+        <td>Order cancellation: Home → Orders → Details → Help → Cancel</td>
+      </tr>
+      <tr>
+        <td style="font-weight:600;color:var(--ink);">Consistency & Standards</td>
+        <td>Back navigation behaves inconsistently — sometimes slides, sometimes fades, sometimes jumps. CTA button colours differ between Zomato and Hyperpure sections.</td>
+        <td><span class="sev-chip high">High</span></td>
+        <td>Button: #E23744 vs #CB202D depending on section</td>
+      </tr>
+      <tr>
+        <td style="font-weight:600;color:var(--ink);">Error Prevention</td>
+        <td>Address confirmation step is easily skipped. No warning when switching restaurants mid-cart. Payment failures lack specific error messages.</td>
+        <td><span class="sev-chip crit">Critical</span></td>
+        <td>"Payment failed" — no reason given</td>
+      </tr>
+      <tr>
+        <td style="font-weight:600;color:var(--ink);">Recognition over Recall</td>
+        <td>Recent orders and favourites are accessible but buried. Reorder CTA is small. Filter state is not retained between searches.</td>
+        <td><span class="sev-chip high">High</span></td>
+        <td>Applied filters reset when leaving search screen</td>
+      </tr>
+      <tr>
+        <td style="font-weight:600;color:var(--ink);">Flexibility & Efficiency</td>
+        <td>Power users want quick reorder — it exists but takes 4 taps. No widget or shortcut. Voice ordering completely absent despite Google/Siri integration being trivial.</td>
+        <td><span class="sev-chip med">Medium</span></td>
+        <td>No home screen widget or lock screen shortcut</td>
+      </tr>
+      <tr>
+        <td style="font-weight:600;color:var(--ink);">Aesthetic & Minimalist Design</td>
+        <td>Homepage is severely cluttered — ads, banners, Zomato Live tabs, Dining Out, Grocery sections compete equally for attention. Visual hierarchy is weak.</td>
+        <td><span class="sev-chip crit">Critical</span></td>
+        <td>6+ promotional banners above the fold on homepage</td>
+      </tr>
+      <tr>
+        <td style="font-weight:600;color:var(--ink);">Help Users Recognize Errors</td>
+        <td>Error states are generic. Cart errors don't specify which item is unavailable. "Something went wrong" appears for diverse problems.</td>
+        <td><span class="sev-chip high">High</span></td>
+        <td>"Oops! Something went wrong" — no actionable next step</td>
+      </tr>
+      <tr>
+        <td style="font-weight:600;color:var(--ink);">Help & Documentation</td>
+        <td>Help centre is comprehensive but hard to reach. AI chatbot (Zomato support) resolves simple issues quickly. FAQ search is functional.</td>
+        <td><span class="sev-chip low">Low</span></td>
+        <td>Help accessible under Orders → Issue — acceptable depth</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- SECTION 4: STRENGTHS & WEAKNESSES -->
+<div class="page page-divider">
+  <div class="cs-section-header">
+    <div class="cs-sec-num">04</div>
+    <div class="cs-sec-info">
+      <div class="cs-sec-sub">Analysis</div>
+      <h2 class="cs-sec-title">Strengths & Weaknesses</h2>
+    </div>
+  </div>
+
+  <div class="findings-grid">
+    <div class="finding-card">
+      <div class="finding-header">
+        <div class="finding-icon str">✅</div>
+        <div class="finding-title">Strengths</div>
+      </div>
+      <div class="finding-body">
+        <ul class="finding-list">
+          <li><div class="fl-bullet str">+</div><div>Live GPS tracking is smooth, reliable, and visually satisfying — one of the best delivery tracking UIs in the market.</div></li>
+          <li><div class="fl-bullet str">+</div><div>Review and rating system is rich — photo uploads, helpfulness votes, and verified purchase badges build trust.</div></li>
+          <li><div class="fl-bullet str">+</div><div>Zomato Pro membership savings are clearly communicated pre-checkout — drives real conversion uplift.</div></li>
+          <li><div class="fl-bullet str">+</div><div>Food photos are consistently high quality, well-curated, and enticing — reduces pre-purchase anxiety.</div></li>
+          <li><div class="fl-bullet str">+</div><div>Payment options are exhaustive — UPI, cards, wallets, BNPL — reducing drop-offs at checkout.</div></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="finding-card">
+      <div class="finding-header">
+        <div class="finding-icon wk">⚠️</div>
+        <div class="finding-title">Weaknesses</div>
+      </div>
+      <div class="finding-body">
+        <ul class="finding-list">
+          <li><div class="fl-bullet wk">−</div><div>Homepage is an attention war — too many content types (food, dining, grocery, live events) compete without clear hierarchy.</div></li>
+          <li><div class="fl-bullet wk">−</div><div>Checkout flow has 5+ steps with multiple upsell modals, creating friction and drop-offs at peak order intent.</div></li>
+          <li><div class="fl-bullet wk">−</div><div>Post-delivery rating prompt is abrupt, mandatory-feeling, and offers no incentive — resulting in low quality feedback.</div></li>
+          <li><div class="fl-bullet wk">−</div><div>Search filters reset between sessions, forcing repeat setup — particularly painful for users with dietary preferences.</div></li>
+          <li><div class="fl-bullet wk">−</div><div>Restaurant estimated delivery times are often optimistic, eroding trust when orders run significantly late.</div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 5: IMPROVEMENTS -->
+<div class="page page-divider">
+  <div class="cs-section-header">
+    <div class="cs-sec-num">05</div>
+    <div class="cs-sec-info">
+      <div class="cs-sec-sub">Proposed Redesign</div>
+      <h2 class="cs-sec-title">3 Improvement Proposals</h2>
+    </div>
+  </div>
+
+  <div class="improvement-section">
+
+    <!-- Improvement 1 -->
+    <div class="improvement-card">
+      <div class="imp-header">
+        <div class="imp-num c1">01</div>
+        <div class="imp-header-text">
+          <div class="imp-label">Discovery & Navigation</div>
+          <div class="imp-title">Intent-First Home Screen Architecture</div>
+          <div class="imp-desc">Redesign the homepage to open with a "What are you in the mood for?" intent selector rather than a cluttered promotional grid. Surface personalised context (time of day, past orders, location) before banners. Banners become a secondary carousel below the fold.</div>
+        </div>
+      </div>
+      <div class="imp-body">
+        <div class="imp-problem">
+          <div class="imp-col-title">Current Problem</div>
+          <div class="imp-text">Users land on a homepage with 6+ competing banners, a Zomato Live tab, Grocery shortcut, Dining Out card, and algorithm-driven restaurant feed — all above the fold. There is no clear visual hierarchy. Users with a clear intent (e.g. "I want biryani") must scroll past irrelevant noise to reach the search bar or relevant category. This contributes to decision fatigue and reduces time-to-order.</div>
+        </div>
+        <div class="imp-solution">
+          <div class="imp-col-title">Proposed Solution</div>
+          <div class="imp-text">Introduce a context-aware intent bar at the very top: a single large input combining location + search intent with smart suggestions. Below it, show 4 large mode tiles: "Order Now", "Schedule", "Dining Out", "Grocery" — clean, icon-forward, no text clutter. Personalised restaurant cards follow. Promotional banners demoted to a swipeable row below the restaurant cards. Filter persistence enabled via profile-linked preferences.</div>
+        </div>
+        <div class="imp-mockup">
+          <div class="imp-col-title">Mockup Sketch</div>
+          <div class="mockup-sketch">
+            <div class="sk-bar accent" style="height:32px;border-radius:8px;display:flex;align-items:center;padding:0 10px;"><div style="font-size:9px;color:rgba(232,50,26,0.8);">🔍 What do you want to eat?</div></div>
+            <div class="sk-grid-2">
+              <div class="sk-box primary" style="height:36px;">Order Now</div>
+              <div class="sk-box primary" style="height:36px;">Dining Out</div>
+            </div>
+            <div class="sk-bar short" style="height:6px;"></div>
+            <div class="sk-grid-2">
+              <div class="sk-mini-card" style="background:rgba(232,50,26,0.08);"></div>
+              <div class="sk-mini-card" style="background:rgba(232,50,26,0.08);"></div>
+            </div>
+            <div class="sk-row">
+              <div class="sk-pill active"></div>
+              <div class="sk-pill"></div>
+              <div class="sk-pill"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Improvement 2 -->
+    <div class="improvement-card">
+      <div class="imp-header">
+        <div class="imp-num c2">02</div>
+        <div class="imp-header-text">
+          <div class="imp-label">Checkout Flow</div>
+          <div class="imp-title">Streamlined One-Screen Checkout</div>
+          <div class="imp-desc">Collapse the 5-step checkout into a single scrollable sheet with progressive disclosure. Remove intrusive upsell modals during the payment step — relocate upsells to a non-blocking "You might also like" strip within the cart itself.</div>
+        </div>
+      </div>
+      <div class="imp-body">
+        <div class="imp-problem">
+          <div class="imp-col-title">Current Problem</div>
+          <div class="imp-text">The current checkout requires navigating: Cart → Address confirmation → Coupon screen → Upsell modal → Tip screen → Payment selection → Payment → OTP → Order confirmation. Each screen transition adds cognitive load. The upsell modal appears at the moment of highest intent, causing interruption anxiety. Users on slower devices or connections drop off during loading transitions between these steps. A/B studies in e-commerce consistently show that reducing checkout steps increases conversion by 15–30%.</div>
+        </div>
+        <div class="imp-solution">
+          <div class="imp-col-title">Proposed Solution</div>
+          <div class="imp-text">Single bottom-sheet checkout that expands sections inline: (1) Delivery address with map pin preview, (2) Cart summary with inline quantity edit, (3) "Add more from this restaurant" expandable strip, (4) Coupon field, (5) Payment method quick-select with Apple Pay / UPI front-and-centre, (6) Place Order CTA with clear total. Tip moved to a post-delivery prompt. Eliminates 3 full-screen transitions and 2 modal interruptions. Retains all functionality without the friction.</div>
+        </div>
+        <div class="imp-mockup">
+          <div class="imp-col-title">Mockup Sketch</div>
+          <div class="mockup-sketch">
+            <div class="sk-bar" style="width:30%;height:4px;border-radius:2px;margin:0 auto 12px;"></div>
+            <div class="sk-bar xs" style="height:6px;margin-bottom:6px;"></div>
+            <div class="sk-box" style="height:28px;background:var(--rule);">📍 Address</div>
+            <div class="sk-box blue-box" style="height:28px;margin-top:6px;">🛒 Cart (3 items) — expand</div>
+            <div style="display:flex;gap:6px;margin-top:6px;">
+              <div class="sk-box" style="flex:1;height:28px;font-size:8px;">Coupon</div>
+              <div class="sk-box" style="flex:1;height:28px;font-size:8px;">💳 Pay</div>
+            </div>
+            <div class="sk-box primary" style="height:36px;margin-top:8px;">Place Order — ₹ 450</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Improvement 3 -->
+    <div class="improvement-card">
+      <div class="imp-header">
+        <div class="imp-num c3">03</div>
+        <div class="imp-header-text">
+          <div class="imp-label">Feedback System</div>
+          <div class="imp-title">Gamified & Contextual Review Loop</div>
+          <div class="imp-desc">Replace the abrupt post-delivery rating prompt with a delayed, gamified, context-aware feedback system that feels rewarding rather than obligatory. Tie ratings to Zomato coins (loyalty currency) and surface prompts 30 minutes post-delivery — when the meal experience is fully formed.</div>
+        </div>
+      </div>
+      <div class="imp-body">
+        <div class="imp-problem">
+          <div class="imp-col-title">Current Problem</div>
+          <div class="imp-text">Zomato's current rating prompt fires immediately after the delivery confirmation — before the user has even tasted the food. The 5-star tap plus mandatory text box feel like a chore. There is no incentive to rate, so most users skip it or leave generic 5-stars without useful feedback. This degrades the quality of social proof that drives restaurant selection for other users. The review system — one of Zomato's core differentiators — is undermined by poor feedback UX.</div>
+        </div>
+        <div class="imp-solution">
+          <div class="imp-col-title">Proposed Solution</div>
+          <div class="imp-text">Introduce "Taste Check-In" — a delayed push notification 25–35 minutes post-delivery: "How was your [dish name] from [restaurant]?" Single tap opens a micro-review card: animated emoji sentiment selector (horrible → amazing), photo upload with one-tap from camera roll, optional text — not mandatory. Completion earns "Zomato Coins" displayed as an animated reward. A "Top Reviewer" badge unlocks after 10 quality reviews — drives social identity and long-term retention. Review quality measured and improved through ML sentiment analysis on submissions.</div>
+        </div>
+        <div class="imp-mockup">
+          <div class="imp-col-title">Mockup Sketch</div>
+          <div class="mockup-sketch">
+            <div class="sk-bar xs" style="height:5px;"></div>
+            <div class="sk-box purple-box" style="height:28px;font-size:9px;">How was your Chicken Biryani? 🍛</div>
+            <div style="display:flex;justify-content:space-around;margin-top:8px;margin-bottom:8px;">
+              <div style="font-size:20px;">😞</div>
+              <div style="font-size:20px;">😐</div>
+              <div style="font-size:20px;">😊</div>
+              <div style="font-size:20px;">🤩</div>
+            </div>
+            <div class="sk-bar" style="margin-bottom:6px;"></div>
+            <div style="display:flex;gap:6px;">
+              <div class="sk-box" style="flex:1;height:24px;font-size:8px;">📷 Add Photo</div>
+              <div class="sk-box purple-box" style="flex:1;height:24px;font-size:8px;">Submit +10 🪙</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SECTION 6: IMPACT SUMMARY -->
+<div class="page page-divider">
+  <div class="cs-section-header">
+    <div class="cs-sec-num">06</div>
+    <div class="cs-sec-info">
+      <div class="cs-sec-sub">Results</div>
+      <h2 class="cs-sec-title">Impact Summary</h2>
+    </div>
+  </div>
+
+  <div class="rec-summary">
+    <div style="font-family:'Fraunces',serif;font-size:20px;font-weight:600;margin-bottom:8px;">Projected UX Improvements</div>
+    <div style="font-size:13px;color:rgba(255,255,255,0.4);">Based on industry benchmarks and comparative UX research</div>
+    <div class="rec-grid">
+      <div class="rec-item">
+        <div class="rec-num">01</div>
+        <div class="rec-title">Intent-First Homepage</div>
+        <div class="rec-desc">Reducing ad/promotional clutter above the fold and leading with search intent is projected to decrease time-to-order by 18–25% and reduce bounce rate from the homepage.</div>
+        <div class="rec-impact high">⬆ High Impact</div>
+      </div>
+      <div class="rec-item">
+        <div class="rec-num">02</div>
+        <div class="rec-title">One-Screen Checkout</div>
+        <div class="rec-desc">Reducing checkout from 7 steps to a single progressive sheet removes friction at peak purchase intent. Industry benchmarks suggest 15–30% checkout completion improvement.</div>
+        <div class="rec-impact high">⬆ High Impact</div>
+      </div>
+      <div class="rec-item">
+        <div class="rec-num">03</div>
+        <div class="rec-title">Gamified Review Loop</div>
+        <div class="rec-desc">Delayed + rewarded feedback prompts typically increase review completion rates by 3–5x. Higher review quality improves restaurant ranking accuracy and new-user conversion.</div>
+        <div class="rec-impact med">⬆ Medium Impact</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 7: CONCLUSION -->
+<div class="page">
+  <div class="cs-section-header">
+    <div class="cs-sec-num">07</div>
+    <div class="cs-sec-info">
+      <div class="cs-sec-sub">Summary</div>
+      <h2 class="cs-sec-title">Conclusion</h2>
+    </div>
+  </div>
+
+  <div class="conclusion">
+    <div class="conclusion-quote">"Zomato succeeds where it matters most — trust, tracking, and content depth — but falls short in reducing friction at the moments of highest purchase intent."</div>
+    <div class="conclusion-text">
+      Zomato is a technically robust, content-rich platform that has built genuine user trust through its live tracking system, extensive review ecosystem, and broad restaurant network. However, its UX suffers from accumulated product complexity — each feature addition over the years has left the interface slightly more cluttered, slightly more interruptive, and slightly more exhausting for users who simply want to eat well without friction.
+
+      The three improvements proposed in this case study — intent-first discovery, streamlined checkout, and gamified reviews — are not radical overhauls. They are focused, high-leverage interventions that remove friction at the three most pain-sensitive touchpoints in Zomato's user journey. Each is rooted in established UX principles (progressive disclosure, recognition over recall, intrinsic motivation) and validated by analogous improvements in comparable platforms like DoorDash, Uber Eats, and Swiggy.
+
+      If implemented, these changes would not only improve measurable metrics (conversion rate, review volume, session depth) but would make Zomato feel less like a feature catalogue and more like a trusted, frictionless food companion. That shift — from capable to delightful — is where durable user loyalty is built.
+
+      Ultimately, Zomato's UX opportunity is not about adding more. It is about doing less, better — and trusting users to find what they came for.
+    </div>
+  </div>
+</div>
+
+<div class="cs-footer">
+  <span>CodeAlpha's Intern Sunny Lakhwani · Task 03</span>
+  <span>Zomato UX Case Study · 2025</span>
+  <span>Expert Heuristic Review</span>
+</div>
+
+</body>
+</html>

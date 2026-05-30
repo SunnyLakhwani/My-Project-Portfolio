@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task 1 — Wireframes | FoodNow App | CodeAlpha</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --wire-bg: #f5f2ed;
+    --wire-surface: #ebe7e0;
+    --wire-border: #c4bdb2;
+    --wire-dark: #2a2520;
+    --wire-mid: #6b635a;
+    --wire-light: #9c9088;
+    --wire-accent: #3d3530;
+    --wire-blue: #4a6fa5;
+    --wire-red: #c0392b;
+    --wire-green: #27ae60;
+    --wire-yellow: #f39c12;
+    --grid: #ddd8d0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--wire-bg);
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--wire-dark);
+    min-height: 100vh;
+  }
+
+  /* ---- COVER PAGE ---- */
+  .cover {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--wire-dark);
+    position: relative;
+    overflow: hidden;
+    padding: 60px;
+  }
+
+  .cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.04) 39px, rgba(255,255,255,0.04) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.04) 39px, rgba(255,255,255,0.04) 40px);
+  }
+
+  .cover-badge {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 6px 16px;
+    margin-bottom: 40px;
+    position: relative;
+  }
+
+  .cover-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(48px, 8vw, 96px);
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+    line-height: 1;
+    position: relative;
+    margin-bottom: 8px;
+  }
+
+  .cover-title span {
+    color: #f39c12;
+  }
+
+  .cover-sub {
+    font-size: 14px;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 60px;
+    position: relative;
+  }
+
+  .cover-meta {
+    display: flex;
+    gap: 40px;
+    position: relative;
+  }
+
+  .cover-meta-item {
+    text-align: center;
+  }
+
+  .cover-meta-item .label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.3);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .cover-meta-item .val {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .cover-scroll {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: rgba(255,255,255,0.2);
+    text-transform: uppercase;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse { 0%,100%{opacity:.2} 50%{opacity:.6} }
+
+  /* ---- DOC LAYOUT ---- */
+  .doc {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 40px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 48px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--wire-border);
+  }
+
+  .section-num {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--wire-light);
+    text-transform: uppercase;
+  }
+
+  .section-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--wire-dark);
+  }
+
+  /* ---- WIREFRAME GRID ---- */
+  .wireframe-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    margin-bottom: 80px;
+  }
+
+  .wireframe-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .wf-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--wire-light);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .wf-label::before {
+    content: '';
+    width: 20px;
+    height: 1px;
+    background: var(--wire-light);
+  }
+
+  .wf-screen {
+    background: #fff;
+    border: 2px solid var(--wire-border);
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 4px 4px 0 var(--wire-border);
+  }
+
+  .wf-screen::before {
+    content: '';
+    display: block;
+    height: 36px;
+    background: #f0ece6;
+    border-bottom: 1px solid var(--wire-border);
+  }
+
+  .wf-screen::after {
+    content: '●  ●  ●';
+    position: absolute;
+    top: 10px;
+    left: 14px;
+    font-size: 10px;
+    color: var(--wire-border);
+    letter-spacing: 2px;
+  }
+
+  .wf-body {
+    padding: 12px;
+  }
+
+  /* WIREFRAME ELEMENTS */
+  .wf-placeholder {
+    background: var(--wire-surface);
+    border: 1.5px dashed var(--wire-border);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--wire-light);
+  }
+
+  .wf-placeholder.img { height: 80px; margin-bottom: 8px; }
+  .wf-placeholder.banner { height: 120px; margin-bottom: 10px; border-radius: 8px; }
+  .wf-placeholder.hero { height: 160px; margin-bottom: 10px; border-radius: 10px; }
+  .wf-placeholder.card { height: 70px; margin-bottom: 6px; }
+  .wf-placeholder.chip { height: 28px; border-radius: 14px; display: inline-flex; padding: 0 10px; font-size: 9px; }
+  .wf-placeholder.map { height: 140px; border-radius: 6px; }
+  .wf-placeholder.avatar { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; }
+
+  .wf-text-line {
+    height: 8px;
+    background: var(--wire-border);
+    border-radius: 2px;
+    margin-bottom: 6px;
+  }
+
+  .wf-text-line.short { width: 60%; }
+  .wf-text-line.med { width: 80%; }
+  .wf-text-line.full { width: 100%; }
+  .wf-text-line.xs { width: 40%; height: 6px; }
+
+  .wf-btn {
+    height: 36px;
+    background: var(--wire-dark);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #fff;
+    margin-top: 8px;
+  }
+
+  .wf-btn.outline {
+    background: transparent;
+    border: 1.5px solid var(--wire-dark);
+    color: var(--wire-dark);
+  }
+
+  .wf-btn.sm { height: 28px; font-size: 8px; margin-top: 4px; }
+
+  .wf-search {
+    height: 34px;
+    border: 1.5px solid var(--wire-border);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .wf-search-icon {
+    width: 12px;
+    height: 12px;
+    border: 1.5px solid var(--wire-border);
+    border-radius: 50%;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .wf-search-icon::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    width: 5px;
+    height: 1.5px;
+    background: var(--wire-border);
+    transform: rotate(45deg);
+  }
+
+  .wf-chips-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+
+  .wf-nav {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    border-top: 1.5px solid var(--wire-border);
+    margin-top: 8px;
+  }
+
+  .wf-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .wf-nav-icon {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--wire-border);
+    border-radius: 4px;
+  }
+
+  .wf-nav-icon.active { background: var(--wire-dark); border-color: var(--wire-dark); }
+
+  .wf-nav-label { width: 24px; height: 5px; background: var(--wire-border); border-radius: 2px; }
+
+  .wf-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: flex-start; }
+  .wf-col { flex: 1; }
+
+  .wf-card-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .wf-card-mini {
+    flex: 1;
+    border: 1.5px solid var(--wire-border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .wf-card-mini-img {
+    height: 50px;
+    background: var(--wire-surface);
+    border-bottom: 1px solid var(--wire-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    color: var(--wire-light);
+    letter-spacing: 1px;
+  }
+
+  .wf-card-mini-body {
+    padding: 6px;
+  }
+
+  .wf-stars { display: flex; gap: 2px; margin-bottom: 4px; }
+  .wf-star { width: 8px; height: 8px; background: var(--wire-yellow); clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
+  .wf-star.empty { background: var(--wire-border); }
+
+  .wf-tag {
+    display: inline-block;
+    background: var(--wire-surface);
+    border: 1px solid var(--wire-border);
+    border-radius: 3px;
+    font-size: 8px;
+    padding: 2px 6px;
+    color: var(--wire-mid);
+    margin-right: 4px;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  .wf-divider {
+    border: none;
+    border-top: 1px solid var(--wire-border);
+    margin: 8px 0;
+  }
+
+  .wf-step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .wf-step-num {
+    width: 20px;
+    height: 20px;
+    border: 1.5px solid var(--wire-dark);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .wf-step-num.done { background: var(--wire-dark); color: #fff; }
+
+  /* ---- ANNOTATION ---- */
+  .annotation-wrap {
+    background: var(--wire-dark);
+    border-radius: 12px;
+    padding: 40px;
+    margin-bottom: 80px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+
+  .annotation-item {
+    border-left: 2px solid rgba(255,255,255,0.15);
+    padding-left: 16px;
+  }
+
+  .ann-num {
+    font-size: 32px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.15);
+    margin-bottom: 8px;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  .ann-title {
+    font-size: 12px;
+    font-weight: 500;
+    color: #fff;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+  }
+
+  .ann-desc {
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    line-height: 1.6;
+  }
+
+  /* ---- USER FLOW ---- */
+  .flow-wrap {
+    background: #fff;
+    border: 2px solid var(--wire-border);
+    border-radius: 12px;
+    padding: 40px;
+    margin-bottom: 80px;
+  }
+
+  .flow-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 32px;
+    color: var(--wire-dark);
+  }
+
+  .flow-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+
+  .flow-node {
+    flex-shrink: 0;
+    text-align: center;
+  }
+
+  .flow-box {
+    width: 100px;
+    padding: 12px 8px;
+    border: 2px solid var(--wire-dark);
+    border-radius: 8px;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    line-height: 1.4;
+    background: var(--wire-bg);
+  }
+
+  .flow-box.start, .flow-box.end {
+    border-radius: 50px;
+    background: var(--wire-dark);
+    color: #fff;
+    border-color: var(--wire-dark);
+  }
+
+  .flow-box.decision {
+    transform: rotate(45deg);
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    padding: 4px;
+  }
+
+  .flow-box.decision span {
+    transform: rotate(-45deg);
+    font-size: 8px;
+    display: block;
+    line-height: 1.3;
+  }
+
+  .flow-arrow {
+    flex-shrink: 0;
+    width: 40px;
+    height: 2px;
+    background: var(--wire-border);
+    position: relative;
+  }
+
+  .flow-arrow::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: -4px;
+    border: 5px solid transparent;
+    border-left: 8px solid var(--wire-border);
+  }
+
+  .flow-node-label {
+    font-size: 8px;
+    color: var(--wire-light);
+    margin-top: 6px;
+    letter-spacing: 1px;
+  }
+
+  /* ---- SITEMAP ---- */
+  .sitemap-wrap {
+    background: var(--wire-surface);
+    border-radius: 12px;
+    padding: 40px;
+    margin-bottom: 80px;
+  }
+
+  .sitemap-tree {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .sitemap-root {
+    background: var(--wire-dark);
+    color: #fff;
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .sitemap-connector-v {
+    width: 2px;
+    height: 32px;
+    background: var(--wire-border);
+  }
+
+  .sitemap-h-line {
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+    gap: 0;
+  }
+
+  .sitemap-h-line::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--wire-border);
+  }
+
+  .sitemap-branch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    flex: 1;
+  }
+
+  .sitemap-connector-h {
+    width: 2px;
+    height: 24px;
+    background: var(--wire-border);
+  }
+
+  .sitemap-node {
+    background: #fff;
+    border: 2px solid var(--wire-border);
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    text-align: center;
+    color: var(--wire-mid);
+  }
+
+  .sitemap-node.mid {
+    background: var(--wire-dark);
+    color: #fff;
+    border-color: var(--wire-dark);
+    font-size: 10px;
+  }
+
+  .sitemap-children {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    position: relative;
+  }
+
+  .sitemap-children::before {
+    content: '';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    width: 2px;
+    height: 12px;
+    background: var(--wire-border);
+  }
+
+  /* ---- SPEC TABLE ---- */
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 80px;
+    background: #fff;
+    border: 2px solid var(--wire-border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .spec-table th {
+    background: var(--wire-dark);
+    color: #fff;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 14px 20px;
+    text-align: left;
+    font-weight: 500;
+  }
+
+  .spec-table td {
+    padding: 12px 20px;
+    font-size: 11px;
+    border-bottom: 1px solid var(--wire-border);
+    color: var(--wire-mid);
+    vertical-align: top;
+  }
+
+  .spec-table tr:last-child td { border-bottom: none; }
+
+  .spec-table td:first-child {
+    font-weight: 500;
+    color: var(--wire-dark);
+    width: 200px;
+    white-space: nowrap;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .badge.high { background: #fde8e6; color: var(--wire-red); }
+  .badge.med { background: #fef3e0; color: var(--wire-yellow); }
+  .badge.low { background: #e8f8ee; color: var(--wire-green); }
+
+  /* ---- FOOTER ---- */
+  .doc-footer {
+    border-top: 2px solid var(--wire-border);
+    padding-top: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--wire-light);
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 768px) {
+    .wireframe-grid { grid-template-columns: 1fr; }
+    .annotation-wrap { grid-template-columns: 1fr 1fr; }
+    .cover-meta { flex-direction: column; gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-badge">CodeAlpha's Intern Sunny Lakhwani · UI/UX Design</div>
+  <h1 class="cover-title">Food<span>Now</span></h1>
+  <div class="cover-sub">Task 01 — Wireframes & Low-Fidelity Design</div>
+  <div class="cover-meta">
+    <div class="cover-meta-item"><span class="label">Platform</span><span class="val">iOS / Android</span></div>
+    <div class="cover-meta-item"><span class="label">Screens</span><span class="val">6 Core</span></div>
+    <div class="cover-meta-item"><span class="label">Fidelity</span><span class="val">Low → Mid</span></div>
+    <div class="cover-meta-item"><span class="label">Tool</span><span class="val">Figma-Ready</span></div>
+  </div>
+  <div class="cover-scroll">↓ Scroll to explore</div>
+</div>
+
+<div class="doc">
+
+  <!-- SECTION 1: WIREFRAMES -->
+  <div class="section-header">
+    <span class="section-num">01 / 04</span>
+    <h2 class="section-title">Core Screen Wireframes</h2>
+  </div>
+
+  <div class="wireframe-grid">
+
+    <!-- Screen 1: Splash / Onboarding -->
+    <div class="wireframe-card">
+      <div class="wf-label">Screen 01 — Onboarding</div>
+      <div class="wf-screen" style="min-height:480px;">
+        <div class="wf-body" style="padding-top:16px;">
+          <div class="wf-placeholder img" style="height:200px;margin-bottom:20px;border-radius:12px;">[ Hero Illustration ]</div>
+          <div style="text-align:center;padding:0 10px;">
+            <div class="wf-text-line full" style="height:16px;margin-bottom:10px;border-radius:4px;"></div>
+            <div class="wf-text-line med" style="margin:0 auto 6px;"></div>
+            <div class="wf-text-line short" style="margin:0 auto 24px;"></div>
+            <div class="wf-btn">Get Started</div>
+            <div class="wf-btn outline" style="margin-top:8px;">Sign In</div>
+            <div style="display:flex;justify-content:center;gap:12px;margin-top:16px;">
+              <div style="width:24px;height:24px;" class="wf-placeholder chip"></div>
+              <div style="width:24px;height:24px;" class="wf-placeholder chip"></div>
+              <div style="width:24px;height:24px;" class="wf-placeholder chip"></div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:center;gap:6px;margin-top:20px;">
+            <div style="width:20px;height:6px;background:var(--wire-dark);border-radius:3px;"></div>
+            <div style="width:6px;height:6px;background:var(--wire-border);border-radius:50%;"></div>
+            <div style="width:6px;height:6px;background:var(--wire-border);border-radius:50%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 2: Home -->
+    <div class="wireframe-card">
+      <div class="wf-label">Screen 02 — Home / Discovery</div>
+      <div class="wf-screen" style="min-height:480px;">
+        <div class="wf-body">
+          <div class="wf-row" style="margin-bottom:10px;">
+            <div class="wf-placeholder avatar">☰</div>
+            <div class="wf-col">
+              <div class="wf-text-line xs"></div>
+              <div class="wf-text-line short"></div>
+            </div>
+            <div class="wf-placeholder avatar" style="border-radius:4px;">🔔</div>
+          </div>
+          <div class="wf-search">
+            <div class="wf-search-icon"></div>
+            <div class="wf-text-line" style="flex:1;margin:0;"></div>
+          </div>
+          <div class="wf-placeholder banner">[ Promo Banner ]</div>
+          <div class="wf-text-line short" style="margin-bottom:8px;"></div>
+          <div class="wf-chips-row">
+            <div class="wf-placeholder chip" style="width:60px;">Pizza</div>
+            <div class="wf-placeholder chip" style="width:60px;">Burger</div>
+            <div class="wf-placeholder chip" style="width:60px;">Sushi</div>
+            <div class="wf-placeholder chip" style="width:60px;">Biryani</div>
+          </div>
+          <div class="wf-text-line xs" style="margin-bottom:8px;"></div>
+          <div class="wf-card-row">
+            <div class="wf-card-mini">
+              <div class="wf-card-mini-img">IMG</div>
+              <div class="wf-card-mini-body">
+                <div class="wf-text-line short" style="height:7px;"></div>
+                <div class="wf-stars"><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star empty"></div></div>
+                <div class="wf-text-line xs"></div>
+              </div>
+            </div>
+            <div class="wf-card-mini">
+              <div class="wf-card-mini-img">IMG</div>
+              <div class="wf-card-mini-body">
+                <div class="wf-text-line short" style="height:7px;"></div>
+                <div class="wf-stars"><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star empty"></div><div class="wf-star empty"></div></div>
+                <div class="wf-text-line xs"></div>
+              </div>
+            </div>
+          </div>
+          <div class="wf-nav">
+            <div class="wf-nav-item"><div class="wf-nav-icon active"></div><div class="wf-nav-label"></div></div>
+            <div class="wf-nav-item"><div class="wf-nav-icon"></div><div class="wf-nav-label"></div></div>
+            <div class="wf-nav-item"><div class="wf-nav-icon"></div><div class="wf-nav-label"></div></div>
+            <div class="wf-nav-item"><div class="wf-nav-icon"></div><div class="wf-nav-label"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 3: Restaurant Detail -->
+    <div class="wireframe-card">
+      <div class="wf-label">Screen 03 — Restaurant Detail</div>
+      <div class="wf-screen" style="min-height:480px;">
+        <div class="wf-body">
+          <div class="wf-placeholder img" style="height:100px;border-radius:8px;margin-bottom:10px;">[ Restaurant Photo ]</div>
+          <div class="wf-text-line med" style="height:11px;margin-bottom:6px;"></div>
+          <div class="wf-row" style="margin-bottom:8px;align-items:center;">
+            <div class="wf-stars"><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star"></div><div class="wf-star empty"></div></div>
+            <div class="wf-text-line xs" style="flex:1;margin:0;"></div>
+          </div>
+          <div class="wf-chips-row" style="margin-bottom:8px;">
+            <div class="wf-tag">30 min</div>
+            <div class="wf-tag">Free delivery</div>
+            <div class="wf-tag">₦₦</div>
+          </div>
+          <hr class="wf-divider">
+          <div class="wf-text-line xs" style="margin-bottom:8px;"></div>
+          <!-- Menu items -->
+          <div class="wf-row" style="border:1px solid var(--wire-border);border-radius:6px;padding:8px;margin-bottom:6px;">
+            <div class="wf-placeholder" style="width:50px;height:50px;flex-shrink:0;">IMG</div>
+            <div class="wf-col" style="padding-left:8px;">
+              <div class="wf-text-line short" style="height:8px;margin-bottom:6px;"></div>
+              <div class="wf-text-line xs" style="margin-bottom:6px;"></div>
+              <div class="wf-text-line short" style="height:8px;"></div>
+            </div>
+          </div>
+          <div class="wf-row" style="border:1px solid var(--wire-border);border-radius:6px;padding:8px;margin-bottom:6px;">
+            <div class="wf-placeholder" style="width:50px;height:50px;flex-shrink:0;">IMG</div>
+            <div class="wf-col" style="padding-left:8px;">
+              <div class="wf-text-line short" style="height:8px;margin-bottom:6px;"></div>
+              <div class="wf-text-line xs" style="margin-bottom:6px;"></div>
+              <div class="wf-text-line short" style="height:8px;"></div>
+            </div>
+          </div>
+          <div class="wf-btn sm">View Cart (2)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 4: Cart -->
+    <div class="wireframe-card">
+      <div class="wf-label">Screen 04 — Cart & Summary</div>
+      <div class="wf-screen" style="min-height:480px;">
+        <div class="wf-body">
+          <div class="wf-text-line short" style="height:13px;margin-bottom:16px;"></div>
+          <!-- Cart items -->
+          <div class="wf-row" style="border-bottom:1px solid var(--wire-border);padding-bottom:10px;margin-bottom:10px;">
+            <div class="wf-placeholder" style="width:44px;height:44px;flex-shrink:0;border-radius:6px;">IMG</div>
+            <div class="wf-col" style="padding-left:8px;">
+              <div class="wf-text-line short" style="height:8px;margin-bottom:6px;"></div>
+              <div class="wf-text-line xs"></div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;">
+              <div style="width:20px;height:20px;border:1px solid var(--wire-border);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;">−</div>
+              <div style="font-size:10px;font-weight:600;">2</div>
+              <div style="width:20px;height:20px;background:var(--wire-dark);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;">+</div>
+            </div>
+          </div>
+          <div class="wf-row" style="border-bottom:1px solid var(--wire-border);padding-bottom:10px;margin-bottom:10px;">
+            <div class="wf-placeholder" style="width:44px;height:44px;flex-shrink:0;border-radius:6px;">IMG</div>
+            <div class="wf-col" style="padding-left:8px;">
+              <div class="wf-text-line short" style="height:8px;margin-bottom:6px;"></div>
+              <div class="wf-text-line xs"></div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;">
+              <div style="width:20px;height:20px;border:1px solid var(--wire-border);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;">−</div>
+              <div style="font-size:10px;font-weight:600;">1</div>
+              <div style="width:20px;height:20px;background:var(--wire-dark);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;">+</div>
+            </div>
+          </div>
+          <!-- Coupon -->
+          <div class="wf-search" style="border-style:dashed;margin-bottom:12px;">
+            <div class="wf-text-line" style="flex:1;margin:0;"></div>
+            <div style="font-size:9px;color:var(--wire-light);white-space:nowrap;">APPLY</div>
+          </div>
+          <!-- Summary -->
+          <div style="background:var(--wire-surface);border-radius:6px;padding:10px;margin-bottom:12px;">
+            <div class="wf-row" style="margin-bottom:4px;"><div style="flex:1;font-size:9px;color:var(--wire-light);">Subtotal</div><div style="font-size:9px;">₦₦₦</div></div>
+            <div class="wf-row" style="margin-bottom:4px;"><div style="flex:1;font-size:9px;color:var(--wire-light);">Delivery</div><div style="font-size:9px;">FREE</div></div>
+            <hr class="wf-divider">
+            <div class="wf-row"><div style="flex:1;font-size:10px;font-weight:600;">Total</div><div style="font-size:10px;font-weight:600;">₦₦₦₦</div></div>
+          </div>
+          <div class="wf-btn">Proceed to Checkout</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 5: Order Tracking -->
+    <div class="wireframe-card">
+      <div class="wf-label">Screen 05 — Order Tracking</div>
+      <div class="wf-screen" style="min-height:480px;">
+        <div class="wf-body">
+          <div class="wf-text-line short" style="height:12px;margin-bottom:8px;"></div>
+          <div class="wf-text-line xs" style="margin-bottom:14px;"></div>
+          <div class="wf-placeholder map">[ Live Map View ]</div>
+          <div style="background:var(--wire-surface);border-radius:8px;padding:12px;margin-bottom:12px;">
+            <div class="wf-row" style="align-items:center;margin-bottom:8px;">
+              <div class="wf-placeholder avatar" style="width:40px;height:40px;"></div>
+              <div class="wf-col" style="padding-left:10px;">
+                <div class="wf-text-line short" style="height:8px;margin-bottom:6px;"></div>
+                <div class="wf-text-line xs"></div>
+              </div>
+              <div style="border:1px solid var(--wire-border);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:12px;">📞</div>
+            </div>
+          </div>
+          <!-- Progress Steps -->
+          <div class="wf-step"><div class="wf-step-num done">✓</div><div class="wf-col"><div class="wf-text-line short" style="height:7px;margin-bottom:4px;"></div><div class="wf-text-line xs"></div></div></div>
+          <div class="wf-step"><div class="wf-step-num done">✓</div><div class="wf-col"><div class="wf-text-line short" style="height:7px;margin-bottom:4px;"></div><div class="wf-text-line xs"></div></div></div>
+          <div class="wf-step"><div class="wf-step-num" style="border-color:var(--wire-blue);color:var(--wire-blue);">3</div><div class="wf-col"><div class="wf-text-line short" style="height:7px;margin-bottom:4px;background:var(--wire-blue);opacity:0.5;"></div><div class="wf-text-line xs"></div></div></div>
+          <div class="wf-step"><div class="wf-step-num">4</div><div class="wf-col"><div class="wf-text-line short" style="height:7px;margin-bottom:4px;"></div><div class="wf-text-line xs"></div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 6: Profile -->
+    <div class="wireframe-card">
+      <div class="wf-label">Screen 06 — Profile & Orders</div>
+      <div class="wf-screen" style="min-height:480px;">
+        <div class="wf-body">
+          <div style="display:flex;flex-direction:column;align-items:center;padding:16px 0;margin-bottom:12px;border-bottom:1px solid var(--wire-border);">
+            <div class="wf-placeholder" style="width:60px;height:60px;border-radius:50%;margin-bottom:10px;">IMG</div>
+            <div class="wf-text-line med" style="height:10px;width:120px;margin:0 auto 6px;"></div>
+            <div class="wf-text-line xs" style="width:80px;margin:0 auto;"></div>
+          </div>
+          <!-- Stats -->
+          <div style="display:flex;gap:0;border:1px solid var(--wire-border);border-radius:8px;overflow:hidden;margin-bottom:12px;">
+            <div style="flex:1;padding:10px;text-align:center;border-right:1px solid var(--wire-border);">
+              <div style="font-size:14px;font-weight:600;margin-bottom:4px;">12</div>
+              <div style="font-size:8px;color:var(--wire-light);">Orders</div>
+            </div>
+            <div style="flex:1;padding:10px;text-align:center;border-right:1px solid var(--wire-border);">
+              <div style="font-size:14px;font-weight:600;margin-bottom:4px;">4.8</div>
+              <div style="font-size:8px;color:var(--wire-light);">Rating</div>
+            </div>
+            <div style="flex:1;padding:10px;text-align:center;">
+              <div style="font-size:14px;font-weight:600;margin-bottom:4px;">320</div>
+              <div style="font-size:8px;color:var(--wire-light);">Points</div>
+            </div>
+          </div>
+          <!-- Menu items -->
+          <div style="font-size:9px;color:var(--wire-light);letter-spacing:1px;margin-bottom:8px;">ACCOUNT</div>
+          <div style="display:flex;flex-direction:column;gap:1px;">
+            <div style="display:flex;align-items:center;padding:10px 0;border-bottom:1px solid var(--wire-border);font-size:10px;gap:8px;"><div class="wf-nav-icon"></div><div style="flex:1;"><div class="wf-text-line short" style="height:7px;margin:0;"></div></div><div style="font-size:10px;color:var(--wire-light);">›</div></div>
+            <div style="display:flex;align-items:center;padding:10px 0;border-bottom:1px solid var(--wire-border);font-size:10px;gap:8px;"><div class="wf-nav-icon"></div><div style="flex:1;"><div class="wf-text-line short" style="height:7px;margin:0;"></div></div><div style="font-size:10px;color:var(--wire-light);">›</div></div>
+            <div style="display:flex;align-items:center;padding:10px 0;border-bottom:1px solid var(--wire-border);font-size:10px;gap:8px;"><div class="wf-nav-icon"></div><div style="flex:1;"><div class="wf-text-line short" style="height:7px;margin:0;"></div></div><div style="font-size:10px;color:var(--wire-light);">›</div></div>
+          </div>
+          <div class="wf-btn outline" style="margin-top:12px;">Log Out</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SECTION 2: ANNOTATIONS -->
+  <div class="section-header">
+    <span class="section-num">02 / 04</span>
+    <h2 class="section-title">Design Annotations</h2>
+  </div>
+
+  <div class="annotation-wrap">
+    <div class="annotation-item">
+      <div class="ann-num">01</div>
+      <div class="ann-title">Navigation Pattern</div>
+      <div class="ann-desc">Bottom tab bar with 4 primary routes: Home, Search, Orders, Profile. Active state uses filled icon + label highlight. Persistent across all main screens.</div>
+    </div>
+    <div class="annotation-item">
+      <div class="ann-num">02</div>
+      <div class="ann-title">Search & Filters</div>
+      <div class="ann-desc">Sticky search bar with location context. Horizontal chip scroll for category filtering. Debounced input triggers live results. Filter sheet modal on tap.</div>
+    </div>
+    <div class="annotation-item">
+      <div class="ann-num">03</div>
+      <div class="ann-title">Cart Persistence</div>
+      <div class="ann-desc">Cart count badge on bottom nav. Floating CTA on restaurant screen. Cart persists across sessions using local storage. Conflict alert if switching restaurants.</div>
+    </div>
+    <div class="annotation-item">
+      <div class="ann-num">04</div>
+      <div class="ann-title">Live Tracking</div>
+      <div class="ann-desc">Real-time rider location via WebSocket. 4-step status progress. Estimated arrival countdown. One-tap call/chat with rider. Push notifications at each milestone.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: USER FLOW -->
+  <div class="section-header">
+    <span class="section-num">03 / 04</span>
+    <h2 class="section-title">Core User Flow</h2>
+  </div>
+
+  <div class="flow-wrap">
+    <div class="flow-title">Happy Path — Order Placement</div>
+    <div class="flow-row">
+      <div class="flow-node"><div class="flow-box start">Open App</div><div class="flow-node-label">Entry</div></div>
+      <div class="flow-arrow"></div>
+      <div class="flow-node"><div class="flow-box">Browse / Search</div><div class="flow-node-label">Home Screen</div></div>
+      <div class="flow-arrow"></div>
+      <div class="flow-node"><div class="flow-box">Select Restaurant</div><div class="flow-node-label">Detail Screen</div></div>
+      <div class="flow-arrow"></div>
+      <div class="flow-node"><div class="flow-box">Add to Cart</div><div class="flow-node-label">Menu Items</div></div>
+      <div class="flow-arrow"></div>
+      <div class="flow-node"><div class="flow-box">Review Cart</div><div class="flow-node-label">Cart Screen</div></div>
+      <div class="flow-arrow"></div>
+      <div class="flow-node"><div class="flow-box">Checkout</div><div class="flow-node-label">Payment</div></div>
+      <div class="flow-arrow"></div>
+      <div class="flow-node"><div class="flow-box">Track Order</div><div class="flow-node-label">Live Map</div></div>
+      <div class="flow-arrow"></div>
+      <div class="flow-node"><div class="flow-box end">Delivered ✓</div><div class="flow-node-label">Success</div></div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: SPEC TABLE -->
+  <div class="section-header">
+    <span class="section-num">04 / 04</span>
+    <h2 class="section-title">Screen Specifications</h2>
+  </div>
+
+  <table class="spec-table">
+    <thead>
+      <tr>
+        <th>Screen</th>
+        <th>Components</th>
+        <th>Interactions</th>
+        <th>Priority</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Onboarding</td>
+        <td>Hero illustration, CTA buttons, Social auth, Pagination dots</td>
+        <td>Swipe carousel, tap CTA, OAuth flow</td>
+        <td><span class="badge high">High</span></td>
+        <td>3-slide onboarding; skip option on slide 1</td>
+      </tr>
+      <tr>
+        <td>Home</td>
+        <td>Header, Search bar, Promo banner, Category chips, Restaurant cards</td>
+        <td>Scroll, tap category, tap card, pull-to-refresh</td>
+        <td><span class="badge high">High</span></td>
+        <td>Personalized "For You" section below featured</td>
+      </tr>
+      <tr>
+        <td>Restaurant Detail</td>
+        <td>Hero photo, Info header, Menu tabs, Item cards, Sticky CTA</td>
+        <td>Scroll, tab switch, add/remove item, floating cart</td>
+        <td><span class="badge high">High</span></td>
+        <td>Parallax on hero image; sticky nav after scroll</td>
+      </tr>
+      <tr>
+        <td>Cart</td>
+        <td>Item list, Quantity stepper, Coupon input, Price breakdown, CTA</td>
+        <td>Quantity +/-, swipe to delete, apply coupon</td>
+        <td><span class="badge high">High</span></td>
+        <td>Upsell suggestions below cart items</td>
+      </tr>
+      <tr>
+        <td>Order Tracking</td>
+        <td>Map, Rider info card, Progress stepper, Contact options</td>
+        <td>Live location update, call rider, chat</td>
+        <td><span class="badge med">Medium</span></td>
+        <td>WebSocket for real-time; fallback polling every 30s</td>
+      </tr>
+      <tr>
+        <td>Profile</td>
+        <td>Avatar, Stats strip, Menu list, Logout</td>
+        <td>Edit profile, view order history, settings</td>
+        <td><span class="badge low">Low</span></td>
+        <td>Loyalty points display; referral section at bottom</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="doc-footer">
+    <span>CodeAlpha's Intern Sunny Lakhwani · Task 01</span>
+    <span>FoodNow App · Wireframes</span>
+    <span>Low-Fidelity Design · v1.0</span>
+  </div>
+
+</div>
+</body>
+</html>
